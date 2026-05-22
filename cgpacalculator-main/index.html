@@ -1,0 +1,3940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>R.V.R & J.C B.Tech CSE R24 Subject-wise SGPA & CGPA Calculator</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Official Subject-wise SGPA & CGPA Calculator for R.V.R & J.C College of Engineering (Autonomous) B.Tech CSE R24 Regulation. Calculate weighted GPA, track credits, view placement eligibility, and export PDF transcripts.">
+  <meta name="keywords" content="RVR JC, CGPA Calculator, R24 Regulation, B.Tech CSE, JNTUK, SGPA Calculator, Subject-wise CGPA">
+  <meta name="author" content="Designed for R24 CSE Students">
+  
+  <!-- Font and Icon Libraries -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Chart.js, Confetti and html2pdf CDNs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    /* Premium Cyberpunk + Apple Glassmorphism Design System */
+    :root {
+      /* Dark Theme Variables (Default) */
+      --bg-gradient: linear-gradient(135deg, #0a0816 0%, #05040a 50%, #020104 100%);
+      --bg-card: rgba(255, 255, 255, 0.03);
+      --bg-card-hover: rgba(255, 255, 255, 0.06);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-color-focus: rgba(139, 92, 246, 0.6);
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --primary-glow: rgba(99, 102, 241, 0.2);
+      --accent-color: #6366f1;
+      --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --shadow-color: rgba(0, 0, 0, 0.6);
+      --active-card-shadow: 0 0 25px rgba(99, 102, 241, 0.3);
+      --transition-speed: 0.3s;
+      --ring-background: rgba(255, 255, 255, 0.04);
+      --neon-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    }
+
+    [data-theme="light"] {
+      /* Light Theme Variables */
+      --bg-gradient: radial-gradient(circle at 0% 0%, #f1f5f9 0%, #e2e8f0 50%, #cbd5e1 100%);
+      --bg-card: rgba(255, 255, 255, 0.7);
+      --bg-card-hover: rgba(255, 255, 255, 0.85);
+      --border-color: rgba(0, 0, 0, 0.08);
+      --border-color-focus: rgba(99, 102, 241, 0.6);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --primary-glow: rgba(99, 102, 241, 0.08);
+      --accent-color: #4f46e5;
+      --accent-gradient: linear-gradient(135deg, #7c3aed 0%, #4f46e5 50%, #2563eb 100%);
+      --success-color: #059669;
+      --warning-color: #d97706;
+      --error-color: #dc2626;
+      --shadow-color: rgba(31, 38, 135, 0.06);
+      --active-card-shadow: 0 10px 25px rgba(79, 70, 229, 0.15);
+      --ring-background: rgba(0, 0, 0, 0.05);
+      --neon-shadow: 0 4px 12px rgba(79, 70, 229, 0.2);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background var(--transition-speed), color var(--transition-speed);
+      position: relative;
+    }
+
+    /* Animated Cyberpunk Background Mesh */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
+                  radial-gradient(circle at 80% 70%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+      z-index: -3;
+      pointer-events: none;
+      animation: shiftBackground 15s infinite ease-in-out alternate;
+    }
+
+    @keyframes shiftBackground {
+      0% { transform: scale(1); }
+      100% { transform: scale(1.1); }
+    }
+
+    /* Ambient Background Glow Orbs */
+    .ambient-glow-1 {
+      position: fixed;
+      top: -15%;
+      left: -10%;
+      width: 55vw;
+      height: 55vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+      filter: blur(120px);
+      z-index: -2;
+      pointer-events: none;
+      animation: pulse-glow-1 25s infinite alternate;
+    }
+
+    .ambient-glow-2 {
+      position: fixed;
+      bottom: -15%;
+      right: -10%;
+      width: 50vw;
+      height: 50vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+      filter: blur(120px);
+      z-index: -2;
+      pointer-events: none;
+      animation: pulse-glow-2 20s infinite alternate-reverse;
+    }
+
+    @keyframes pulse-glow-1 {
+      0% { transform: scale(1) translate(0, 0); }
+      100% { transform: scale(1.15) translate(40px, 40px); }
+    }
+
+    @keyframes pulse-glow-2 {
+      0% { transform: scale(1) translate(0, 0); }
+      100% { transform: scale(1.2) translate(-30px, -40px); }
+    }
+
+    /* Layout Wrapper */
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    /* Futuristic Header Navigation */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px 24px;
+      background: var(--bg-card);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px var(--shadow-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent-gradient);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .college-logo-container {
+      background: var(--accent-gradient);
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      box-shadow: var(--neon-shadow);
+    }
+
+    .college-titles h1 {
+      font-size: 1.2rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .college-titles p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Buttons & Selector */
+    .btn-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-circle:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .profile-selector-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .select-premium {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px 36px 10px 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: all var(--transition-speed);
+      appearance: none;
+      -webkit-appearance: none;
+    }
+
+    .select-premium:focus {
+      border-color: var(--border-color-focus);
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .profile-selector-container::after {
+      content: '▼';
+      font-size: 0.6rem;
+      position: absolute;
+      right: 14px;
+      pointer-events: none;
+      color: var(--text-secondary);
+    }
+
+    /* Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--bg-card);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 6px;
+      margin-bottom: 24px;
+      box-shadow: 0 8px 32px var(--shadow-color);
+      width: fit-content;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all var(--transition-speed);
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .tab-btn.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      box-shadow: var(--neon-shadow);
+    }
+
+    /* Views */
+    .view-content {
+      display: none;
+      animation: fadeIn var(--transition-speed) ease-in-out forwards;
+    }
+
+    .view-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Grid Layouts */
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1.7fr 1.3fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* Cards and Panels */
+    .panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 32px var(--shadow-color);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 14px;
+    }
+
+    .panel-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Accordion Semester Cards */
+    .accordion-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .semester-accordion {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .semester-accordion:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+
+    .semester-accordion.active {
+      border-color: var(--accent-color);
+      box-shadow: var(--active-card-shadow);
+      background: rgba(99, 102, 241, 0.02);
+    }
+
+    .accordion-header {
+      padding: 16px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .header-details {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sem-badge {
+      background: var(--accent-gradient);
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      box-shadow: var(--neon-shadow);
+    }
+
+    .sem-title {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .header-stats {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .stat-indicator {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    [data-theme="light"] .stat-indicator {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .chevron-icon {
+      transition: transform var(--transition-speed);
+      color: var(--text-secondary);
+    }
+
+    .semester-accordion.active .chevron-icon {
+      transform: rotate(180deg);
+      color: var(--accent-color);
+    }
+
+    /* Accordion Body */
+    .accordion-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      border-top: 0 solid var(--border-color);
+    }
+
+    .semester-accordion.active .accordion-body {
+      max-height: 600px;
+      border-top-width: 1px;
+    }
+
+    .subjects-list {
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .subject-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 16px;
+      align-items: center;
+      padding: 8px 12px;
+      background: rgba(255, 255, 255, 0.01);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      transition: background var(--transition-speed);
+    }
+
+    .subject-row:hover {
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .subject-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .subject-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .subject-credits {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .grade-dropdown {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      outline: none;
+      transition: all var(--transition-speed);
+      width: 110px;
+    }
+
+    [data-theme="light"] .grade-dropdown {
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .grade-dropdown:focus {
+      border-color: var(--border-color-focus);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    /* RIGHT COLUMN - METRICS & ANALYTICS */
+    .metrics-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .cgpa-gauge-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px;
+      text-align: center;
+      position: relative;
+    }
+
+    .gauge-wrapper {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .progress-ring {
+      transform: rotate(-90deg);
+      width: 180px;
+      height: 180px;
+    }
+
+    .progress-ring__circle {
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .gauge-info {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gauge-value {
+      font-size: 2.5rem;
+      font-weight: 800;
+      font-family: 'Orbitron', sans-serif;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+
+    .gauge-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .stats-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      width: 100%;
+      margin-top: 18px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: background var(--transition-speed);
+    }
+
+    [data-theme="light"] .stat-card {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .stat-value {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .stat-label {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Placement eligibility Predictor Card */
+    .prediction-card {
+      border-left: 5px solid var(--accent-color);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all var(--transition-speed);
+    }
+
+    .predictor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .prediction-title {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .prediction-value {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .predictor-description {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    .prediction-badge {
+      padding: 4px 10px;
+      border-radius: 8px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Prediction Color Classes */
+    .badge-outstanding {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-excellent {
+      background: rgba(59, 130, 246, 0.15);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .badge-very-good {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge-improve {
+      background: rgba(239, 68, 68, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 68, 68, 0.3);
+    }
+
+    /* Actions Panel Card */
+    .actions-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    /* Premium Buttons */
+    .btn-premium {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-premium:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+
+    .btn-premium.btn-accent {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      box-shadow: var(--neon-shadow);
+    }
+
+    .btn-premium.btn-accent:hover {
+      box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+    }
+
+    .btn-premium.btn-danger:hover {
+      border-color: var(--error-color);
+      color: var(--error-color);
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.1);
+    }
+
+    .btn-premium:active {
+      transform: translateY(0);
+    }
+
+    .btn-premium:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+
+    /* Analytics View Panels */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 1.8fr 1.2fr;
+      gap: 24px;
+    }
+
+    .chart-panel-container {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .chart-card-wrapper {
+      position: relative;
+      height: 320px;
+      width: 100%;
+    }
+
+    .insights-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .insight-item {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .insight-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent-color);
+    }
+
+    .insight-details {
+      flex: 1;
+    }
+
+    .insight-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .insight-val {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-top: 2px;
+    }
+
+    /* Profiles Database Tab */
+    .profiles-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all var(--transition-speed);
+    }
+
+    [data-theme="light"] .form-input {
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .form-input:focus {
+      border-color: var(--border-color-focus);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .profiles-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .profiles-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .profiles-list::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 10px;
+    }
+
+    .profile-card {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      transition: all var(--transition-speed);
+    }
+
+    .profile-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+
+    .profile-card.active {
+      border-color: var(--accent-color);
+      box-shadow: var(--active-card-shadow);
+      background: rgba(99, 102, 241, 0.02);
+    }
+
+    .profile-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .profile-card-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .profile-card-roll {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .profile-card-cgpa-badge {
+      background: var(--accent-gradient);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 800;
+      box-shadow: var(--neon-shadow);
+    }
+
+    .profile-card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-profile-action {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: 8px;
+    }
+
+    /* History Logs Tab */
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .search-bar-container {
+      position: relative;
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px 16px 10px 40px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all var(--transition-speed);
+    }
+
+    [data-theme="light"] .search-input {
+      background: rgba(255, 255, 255, 0.6);
+    }
+
+    .search-input:focus {
+      border-color: var(--border-color-focus);
+    }
+
+    .search-icon-pos {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .history-table th {
+      background: rgba(255, 255, 255, 0.02);
+      padding: 14px 18px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+
+    .history-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .history-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .history-table tr:hover td {
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    .history-empty-state {
+      padding: 40px;
+      text-align: center;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Modal Dialogs */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      border-radius: 20px;
+      width: 90%;
+      max-width: 500px;
+      padding: 24px;
+      transform: scale(0.9);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+
+    .modal-close {
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      transition: color var(--transition-speed);
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .share-content-box {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      white-space: pre-wrap;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    [data-theme="light"] .share-content-box {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Screen Preloader */
+    .preloader {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: #05040a;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(99, 102, 241, 0.1);
+      border-top-color: var(--accent-color);
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Toast Containers */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 9999;
+    }
+
+    .toast {
+      background: rgba(18, 16, 38, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 20px;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateY(50px);
+      opacity: 0;
+      animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    [data-theme="light"] .toast {
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+    }
+
+    .toast-success { border-left: 4px solid var(--success-color); }
+    .toast-error { border-left: 4px solid var(--error-color); }
+    .toast-info { border-left: 4px solid var(--accent-color); }
+
+    @keyframes slideIn {
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Footer styling */
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-top: 1px solid var(--border-color);
+      margin-top: 30px;
+    }
+
+    /* Responsive grid styles */
+    @media (max-width: 1024px) {
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
+      .analytics-grid {
+        grid-template-columns: 1fr;
+      }
+      .profiles-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .subject-row {
+        grid-template-columns: 1fr auto;
+      }
+      .grade-dropdown {
+        grid-row: 2;
+        grid-column: 2;
+        width: 100%;
+      }
+      .profiles-list {
+        grid-template-columns: 1fr;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .nav-tabs {
+        width: 100%;
+        overflow-x: auto;
+      }
+      .tab-btn {
+        flex: 1;
+        justify-content: center;
+        white-space: nowrap;
+      }
+    }
+
+    /* ==========================================
+       LOGIN & REGISTRATION PORTAL STYLES
+       ========================================== */
+    .login-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      width: 100%;
+      padding: 24px;
+      z-index: 10;
+      position: relative;
+    }
+    .login-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(30px);
+      -webkit-backdrop-filter: blur(30px);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 60px var(--shadow-color);
+      border-radius: 24px;
+      width: 100%;
+      max-width: 480px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      animation: fadeIn var(--transition-speed) ease-in-out forwards;
+    }
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: var(--accent-gradient);
+    }
+    .login-title-container {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .login-logo {
+      background: var(--accent-gradient);
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      box-shadow: var(--neon-shadow);
+      margin-bottom: 8px;
+    }
+    .login-title-container h2 {
+      font-size: 1.35rem;
+      font-weight: 800;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 0.5px;
+      font-family: 'Orbitron', sans-serif;
+    }
+    .login-title-container p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+    .login-tabs {
+      display: flex;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 4px;
+    }
+    [data-theme="light"] .login-tabs {
+      background: rgba(0, 0, 0, 0.03);
+    }
+    .login-tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: center;
+      transition: all var(--transition-speed);
+    }
+    .login-tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .login-tab-btn.active {
+      color: #fff;
+      background: var(--accent-gradient);
+      box-shadow: var(--neon-shadow);
+    }
+    .login-form-container {
+      display: none;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .login-form-container.active {
+      display: flex;
+    }
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-wrapper .form-input {
+      width: 100%;
+      padding-left: 44px;
+      padding-right: 44px;
+    }
+    .input-icon-left {
+      position: absolute;
+      left: 14px;
+      color: var(--text-muted);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+    }
+    .password-toggle {
+      position: absolute;
+      right: 14px;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: color var(--transition-speed);
+      display: flex;
+      align-items: center;
+    }
+    .password-toggle:hover {
+      color: var(--text-primary);
+    }
+    .login-demo-box {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 14px;
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    [data-theme="light"] .login-demo-box {
+      background: rgba(0, 0, 0, 0.02);
+    }
+    .login-demo-box strong {
+      color: var(--text-primary);
+    }
+
+    /* ==========================================
+       ADMIN PORTAL & SYSTEM STATS STYLES
+       ========================================== */
+    .admin-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+      width: 100%;
+    }
+    .admin-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .badge-standing {
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+    .admin-override-badge {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--error-color);
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.15);
+      animation: pulse-glow-red 2s infinite alternate;
+    }
+    @keyframes pulse-glow-red {
+      0% { box-shadow: 0 0 5px rgba(239, 68, 68, 0.1); }
+      100% { box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); }
+    }
+    .admin-active-badge {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--success-color);
+      padding: 8px 14px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .student-card-mobile {
+      display: none;
+    }
+    .admin-table-desktop {
+      display: block;
+    }
+
+    @media (max-width: 768px) {
+      .admin-stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .admin-table-desktop {
+        display: none;
+      }
+      .student-card-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+      }
+      .profile-card {
+        background: rgba(255, 255, 255, 0.02);
+      }
+      [data-theme="light"] .profile-card {
+        background: rgba(0, 0, 0, 0.02);
+      }
+    }
+
+    /* Floating Glassmorphic Ambient Bubbles for Depth */
+    .floating-bubble {
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: -2;
+      filter: blur(60px);
+      opacity: 0.12;
+      animation: floatAround 25s infinite ease-in-out alternate;
+      transition: opacity 0.5s ease;
+    }
+    
+    [data-theme="light"] .floating-bubble {
+      opacity: 0.06;
+      filter: blur(80px);
+    }
+    
+    .bubble-1 {
+      top: 15%;
+      left: 10%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, #8b5cf6 0%, #6366f1 100%);
+      animation-duration: 32s;
+    }
+    
+    .bubble-2 {
+      bottom: 20%;
+      right: 15%;
+      width: 350px;
+      height: 350px;
+      background: radial-gradient(circle, #3b82f6 0%, #ec4899 100%);
+      animation-duration: 26s;
+      animation-delay: -6s;
+    }
+    
+    @keyframes floatAround {
+      0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+      }
+      50% {
+        transform: translate(60px, 40px) scale(1.1) rotate(180deg);
+      }
+      100% {
+        transform: translate(-30px, -50px) scale(0.95) rotate(360deg);
+      }
+    }
+
+    /* Glowing Focus Transitions */
+    .form-input:focus, .select-premium:focus, .grade-dropdown:focus {
+      border-color: var(--border-color-focus) !important;
+      box-shadow: 0 0 16px rgba(139, 92, 246, 0.35) !important;
+      background: rgba(0, 0, 0, 0.45) !important;
+    }
+    
+    [data-theme="light"] .form-input:focus,
+    [data-theme="light"] .select-premium:focus,
+    [data-theme="light"] .grade-dropdown:focus {
+      background: rgba(255, 255, 255, 0.95) !important;
+      box-shadow: 0 0 16px rgba(99, 102, 241, 0.18) !important;
+    }
+
+    /* Premium Scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 20px;
+      border: 2px solid transparent;
+      background-clip: padding-box;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: var(--text-muted);
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <!-- Ambient background glow elements -->
+  <div class="ambient-glow-1"></div>
+  <div class="ambient-glow-2"></div>
+  
+  <!-- Floating ambient glassmorphic bubbles -->
+  <div class="floating-bubble bubble-1"></div>
+  <div class="floating-bubble bubble-2"></div>
+
+  <!-- Screen Preloader -->
+  <div class="preloader" id="preloader">
+    <div class="spinner"></div>
+    <h2 style="color: white; font-weight: 700; font-size: 1.3rem; letter-spacing: 1px; font-family: 'Orbitron', sans-serif;">R.V.R & J.C PORTAL</h2>
+    <p style="color: #64748b; font-size: 0.85rem; font-weight: 500;">Initializing Academic calculator database...</p>
+  </div>
+
+  <!-- Glassmorphic Login/Registration View -->
+  <div class="login-wrapper" id="loginWrapper" style="display: none;">
+    <div class="login-card">
+      <div class="login-title-container">
+        <div class="login-logo">
+          <i data-lucide="graduation-cap" style="width: 32px; height: 32px;"></i>
+        </div>
+        <h2>R.V.R & J.C</h2>
+        <p>B.Tech CSE R24 Academic Portal</p>
+      </div>
+
+      <div class="login-tabs">
+        <button class="login-tab-btn active" id="btnTabStudentLogin">Student Login</button>
+        <button class="login-tab-btn" id="btnTabStudentRegister">Register</button>
+        <button class="login-tab-btn" id="btnTabAdminLogin">Admin Portal</button>
+      </div>
+
+      <!-- Student Login Form -->
+      <form class="login-form-container active" id="formStudentLogin" onsubmit="return false;">
+        <div class="form-group">
+          <label for="studentLoginRoll">Roll Number / Reg ID</label>
+          <div class="input-wrapper">
+            <i data-lucide="user" class="input-icon-left" style="width: 18px; height: 18px;"></i>
+            <input type="text" class="form-input" id="studentLoginRoll" placeholder="e.g. Y24ACS501" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="studentLoginPass">Password</label>
+          <div class="input-wrapper">
+            <i data-lucide="lock" class="input-icon-left" style="width: 18px; height: 18px;"></i>
+            <input type="password" class="form-input" id="studentLoginPass" placeholder="••••••••" required>
+            <i data-lucide="eye" class="password-toggle" id="toggleStudentLoginPass" style="width: 18px; height: 18px;"></i>
+          </div>
+        </div>
+        <button type="submit" class="btn-premium btn-accent" style="width: 100%; margin-top: 10px;" id="btnSubmitStudentLogin">
+          <i data-lucide="log-in" style="width: 18px; height: 18px;"></i> Log In
+        </button>
+      </form>
+
+      <!-- Student Register Form -->
+      <form class="login-form-container" id="formStudentRegister" onsubmit="return false;">
+        <div class="form-group">
+          <label for="studentRegisterName">Full Name *</label>
+          <div class="input-wrapper">
+            <i data-lucide="user" class="input-icon-left" style="width: 18px; height: 18px;"></i>
+            <input type="text" class="form-input" id="studentRegisterName" placeholder="e.g. Rahul Ramisetti" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="studentRegisterRoll">Roll Number / Reg ID *</label>
+          <div class="input-wrapper">
+            <i data-lucide="hash" class="input-icon-left" style="width: 18px; height: 18px;"></i>
+            <input type="text" class="form-input" id="studentRegisterRoll" placeholder="e.g. Y24ACS501" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="studentRegisterPass">Password *</label>
+          <div class="input-wrapper">
+            <i data-lucide="lock" class="input-icon-left" style="width: 18px; height: 18px;"></i>
+            <input type="password" class="form-input" id="studentRegisterPass" placeholder="e.g. student123" required>
+            <i data-lucide="eye" class="password-toggle" id="toggleStudentRegisterPass" style="width: 18px; height: 18px;"></i>
+          </div>
+        </div>
+        <button type="submit" class="btn-premium btn-accent" style="width: 100%; margin-top: 10px;" id="btnSubmitStudentRegister">
+          <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i> Register Account
+        </button>
+      </form>
+
+      <!-- Admin Login Form -->
+      <form class="login-form-container" id="formAdminLogin" onsubmit="return false;">
+        <div class="form-group">
+          <label for="adminUsername">Admin Username</label>
+          <div class="input-wrapper">
+            <i data-lucide="shield" class="input-icon-left" style="width: 18px; height: 18px;"></i>
+            <input type="text" class="form-input" id="adminUsername" placeholder="Username" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="adminPassword">Admin Password</label>
+          <div class="input-wrapper">
+            <i data-lucide="lock" class="input-icon-left" style="width: 18px; height: 18px;"></i>
+            <input type="password" class="form-input" id="adminPassword" placeholder="••••••••" required>
+            <i data-lucide="eye" class="password-toggle" id="toggleAdminPass" style="width: 18px; height: 18px;"></i>
+          </div>
+        </div>
+        <button type="submit" class="btn-premium btn-accent" style="width: 100%; margin-top: 10px;" id="btnSubmitAdminLogin">
+          <i data-lucide="shield-check" style="width: 18px; height: 18px;"></i> Admin Sign In
+        </button>
+      </form>
+
+      <!-- Pre-filled Credentials Info Box -->
+      <div class="login-demo-box">
+        <div>🔑 <strong>Demo Credentials:</strong></div>
+        <div style="margin-top: 4px;">• <strong>Admin Login:</strong> admin / admin123</div>
+        <div>• <strong>Student Login:</strong> Y24ACS501 / student123</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-container" style="display: none;">
+    
+    <!-- Top Header -->
+    <header>
+      <div class="header-left">
+        <div class="college-logo-container">
+          <i data-lucide="graduation-cap" style="width: 26px; height: 26px;"></i>
+        </div>
+        <div class="college-titles">
+          <h1>R.V.R & J.C College of Engineering (Autonomous)</h1>
+          <p>B.Tech CSE R24 Subject-wise SGPA & CGPA Calculator</p>
+        </div>
+      </div>
+      <div class="header-right" style="flex-wrap: wrap; gap: 12px;">
+        <!-- User Status Badge -->
+        <div id="userStatusBadge" class="admin-active-badge" style="display: none;">
+          <i data-lucide="user-check" style="width: 16px; height: 16px;"></i>
+          <span id="userBadgeName">Student Mode</span>
+        </div>
+
+        <!-- Admin View Overrides banner -->
+        <div id="adminOverrideBadge" class="admin-override-badge" style="display: none;">
+          <i data-lucide="eye" style="width: 16px; height: 16px;"></i>
+          <span>Viewing: <strong id="overrideStudentName">Rahul</strong></span>
+          <button class="btn-premium" id="btnAdminExitOverride" style="padding: 2px 6px; font-size: 0.7rem; border-color: rgba(239, 68, 68, 0.4); background: rgba(239, 68, 68, 0.1); margin-left: 4px;">
+            Exit
+          </button>
+        </div>
+
+        <!-- Active Student Selector (Only visible to Admin) -->
+        <div class="profile-selector-container" id="adminProfileSelectorContainer" style="display: none;">
+          <select class="select-premium" id="profileSelector" aria-label="Select student profile">
+            <option value="default">Default Profile</option>
+          </select>
+        </div>
+        
+        <!-- Add profile icon (Only visible to Admin) -->
+        <button class="btn-circle" id="btnAddProfileShortcut" title="Create New Profile" aria-label="Create New Profile" style="display: none;">
+          <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button class="btn-circle" id="themeToggle" title="Toggle Theme" aria-label="Toggle Theme">
+          <i data-lucide="sun" id="themeIcon" style="width: 18px; height: 18px;"></i>
+        </button>
+
+        <!-- Logout Button -->
+        <button class="btn-circle" id="btnLogout" title="Logout" aria-label="Logout" style="border-color: rgba(239, 68, 68, 0.4); color: var(--error-color);">
+          <i data-lucide="log-out" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="tab-btn active" data-tab="calculator" role="tab" aria-selected="true" aria-controls="tab-calculator">
+        <i data-lucide="calculator" style="width: 16px; height: 16px;"></i> Calculator
+      </button>
+      <button class="tab-btn" data-tab="analytics" role="tab" aria-selected="false" aria-controls="tab-analytics">
+        <i data-lucide="bar-chart-2" style="width: 16px; height: 16px;"></i> Analytics
+      </button>
+      <button class="tab-btn" data-tab="profiles" role="tab" aria-selected="false" aria-controls="tab-profiles">
+        <i data-lucide="users" style="width: 16px; height: 16px;"></i> Profile Manager
+      </button>
+      <button class="tab-btn" data-tab="history" role="tab" aria-selected="false" aria-controls="tab-history">
+        <i data-lucide="history" style="width: 16px; height: 16px;"></i> History Log
+      </button>
+    </nav>
+
+    <!-- CALCULATOR PANEL VIEW -->
+    <div id="tab-calculator" class="view-content active" role="tabpanel">
+      <div class="calculator-grid">
+        
+        <!-- Left: Semester Subjects Dropdowns -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title"><i data-lucide="book-open" style="color: var(--accent-color)"></i>Academic Terms</h2>
+              <p class="panel-subtitle">Select grades for subjects in each semester. SGPAs are weighted based on syllabus credits.</p>
+            </div>
+            <button class="btn-premium btn-danger" id="btnResetAll" style="padding: 8px 14px; font-size: 0.8rem;">
+              <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i> Reset Grades
+            </button>
+          </div>
+          
+          <div class="accordion-list" id="semestersAccordionList">
+            <!-- Dynamically populated Accordions for Semesters 1-8 -->
+          </div>
+        </div>
+
+        <!-- Right: Metrics, Predictors, Actions -->
+        <div class="metrics-panel">
+          
+          <!-- Radial CGPA Gauge -->
+          <div class="panel cgpa-gauge-card">
+            <div class="gauge-wrapper">
+              <svg class="progress-ring" width="180" height="180">
+                <circle class="progress-ring__background" stroke="var(--ring-background)" stroke-width="10" fill="transparent" r="76" cx="90" cy="90"/>
+                <circle class="progress-ring__circle" stroke="url(#cgpaGradient)" stroke-width="10" stroke-linecap="round" fill="transparent" r="76" cx="90" cy="90"/>
+                <defs>
+                  <linearGradient id="cgpaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#8b5cf6" />
+                    <stop offset="50%" stop-color="#6366f1" />
+                    <stop offset="100%" stop-color="#3b82f6" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="gauge-info">
+                <span class="gauge-value" id="cgpaVal">0.00</span>
+                <span class="gauge-label">CGPA</span>
+              </div>
+            </div>
+
+            <!-- Stats grid -->
+            <div class="stats-mini-grid">
+              <div class="stat-card">
+                <span class="stat-value" id="percentVal">0.0%</span>
+                <span class="stat-label">Percentage</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-value" id="creditsVal">0 / 160</span>
+                <span class="stat-label">Credits Earned</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Placement Eligibility Predictor Card -->
+          <div class="panel prediction-card" id="placementPredictorCard">
+            <div class="predictor-header">
+              <div class="prediction-title">Placement Predictor</div>
+              <span class="prediction-badge" id="placementBadge">N/A</span>
+            </div>
+            <div>
+              <div class="prediction-value" id="placementText">No Grades Selected</div>
+              <p class="predictor-description" id="placementDesc">Enter subject grades to view eligible companies & recruitment options.</p>
+            </div>
+          </div>
+
+          <!-- Widget Stats: Highest SGPA -->
+          <div class="panel" style="display: flex; justify-content: space-between; align-items: center; padding: 18px 24px;">
+            <div>
+              <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Highest Semester SGPA</span>
+              <div style="font-size: 1.5rem; font-weight: 800; color: var(--success-color); margin-top: 4px; font-family: 'Orbitron', sans-serif;" id="widgetHighestSGPA">0.00</div>
+            </div>
+            <div style="background: rgba(16, 185, 129, 0.1); width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--success-color);">
+              <i data-lucide="trending-up"></i>
+            </div>
+          </div>
+
+          <!-- Dashboard Actions -->
+          <div class="panel actions-panel">
+            <div class="panel-header" style="margin-bottom: 12px; padding-bottom: 8px; border-bottom: none;">
+              <h3 class="panel-title" style="font-size: 0.95rem;"><i data-lucide="sliders" style="width: 16px; height: 16px;"></i>Actions</h3>
+            </div>
+            <button class="btn-premium btn-accent" id="btnSaveCalculation">
+              <i data-lucide="save" style="width: 18px; height: 18px;"></i> Save Progress
+            </button>
+            <div class="action-row">
+              <button class="btn-premium" id="btnDownloadPDF">
+                <i data-lucide="file-down" style="width: 16px; height: 16px;"></i> PDF Transcript
+              </button>
+              <button class="btn-premium" id="btnShareResult">
+                <i data-lucide="share-2" style="width: 16px; height: 16px;"></i> Share
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- PERFORMANCE ANALYTICS VIEW -->
+    <div id="tab-analytics" class="view-content" role="tabpanel">
+      <div class="analytics-grid">
+        
+        <!-- Left: Charts -->
+        <div class="chart-panel-container">
+          <div class="panel">
+            <div class="panel-header" style="border-bottom: none; margin-bottom: 10px;">
+              <div>
+                <h2 class="panel-title"><i data-lucide="activity" style="color: var(--accent-color)"></i>SGPA & CGPA Trend Progression</h2>
+                <p class="panel-subtitle">Semester-wise GPA compared against cumulative grade point average.</p>
+              </div>
+            </div>
+            <div class="chart-card-wrapper">
+              <canvas id="trendChart"></canvas>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="panel-header" style="border-bottom: none; margin-bottom: 10px;">
+              <div>
+                <h2 class="panel-title"><i data-lucide="pie-chart" style="color: var(--accent-color)"></i>Graduation Credit completion</h2>
+                <p class="panel-subtitle">Comparison of completed regulation credits versus remaining syllabus credits.</p>
+              </div>
+            </div>
+            <div class="chart-card-wrapper" style="height: 250px;">
+              <canvas id="creditChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Academic Insights -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title"><i data-lucide="award" style="color: var(--accent-color)"></i>Performance Insights</h2>
+          </div>
+          <div class="insights-list">
+            <div class="insight-item">
+              <div class="insight-icon"><i data-lucide="zap"></i></div>
+              <div class="insight-details">
+                <div class="insight-title">Highest SGPA</div>
+                <div class="insight-val" id="insightHighest">0.00</div>
+              </div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-icon"><i data-lucide="arrow-down-left"></i></div>
+              <div class="insight-details">
+                <div class="insight-title">Lowest SGPA</div>
+                <div class="insight-val" id="insightLowest">0.00</div>
+              </div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-icon"><i data-lucide="check-square"></i></div>
+              <div class="insight-details">
+                <div class="insight-title">Completed Courses</div>
+                <div class="insight-val" id="insightCompletedCourses">0 / 64</div>
+              </div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-icon"><i data-lucide="star"></i></div>
+              <div class="insight-details">
+                <div class="insight-title">Regulation Standing</div>
+                <div class="insight-val" id="insightStanding">No grades entered</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE DATABASE MANAGER VIEW / ADMIN PORTAL -->
+    <div id="tab-profiles" class="view-content" role="tabpanel">
+      <!-- Admin Stats Dashboard Section -->
+      <div class="admin-stats-grid" id="adminStatsGrid" style="display: none; margin-bottom: 24px;">
+        <div class="panel" style="padding: 16px; display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Total Students</span>
+          <div style="font-size: 1.8rem; font-weight: 800; font-family: 'Orbitron', sans-serif; color: var(--accent-color);" id="adminStatTotal">0</div>
+        </div>
+        <div class="panel" style="padding: 16px; display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Class Average CGPA</span>
+          <div style="font-size: 1.8rem; font-weight: 800; font-family: 'Orbitron', sans-serif; color: var(--success-color);" id="adminStatAvg">0.00</div>
+        </div>
+        <div class="panel" style="padding: 16px; display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Highest CGPA</span>
+          <div style="font-size: 1.8rem; font-weight: 800; font-family: 'Orbitron', sans-serif; color: var(--warning-color);" id="adminStatHighest">0.00</div>
+        </div>
+        <div class="panel" style="padding: 16px; display: flex; flex-direction: column; gap: 4px;">
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase;">Placement Ready</span>
+          <div style="font-size: 1.8rem; font-weight: 800; font-family: 'Orbitron', sans-serif; color: #3b82f6;" id="adminStatReady">0%</div>
+        </div>
+      </div>
+
+      <div class="profiles-grid">
+        <!-- Profile Form -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title"><i data-lucide="user-plus" style="color: var(--accent-color)"></i>New Student Profile</h2>
+          </div>
+          <form id="profileForm" onsubmit="return false;">
+            <div class="form-group">
+              <label for="profName">Student Name *</label>
+              <input type="text" class="form-input" id="profName" placeholder="e.g. Rahul Ramisetti" required>
+            </div>
+            <div class="form-group">
+              <label for="profRoll">Roll Number / Reg ID *</label>
+              <input type="text" class="form-input" id="profRoll" placeholder="e.g. Y24ACS501" required>
+            </div>
+            <div class="form-group">
+              <label for="profPass">Login Password *</label>
+              <input type="password" class="form-input" id="profPass" placeholder="e.g. student123" required value="student123">
+            </div>
+            <div class="form-group">
+              <label for="profNotes">Academic Target/Notes</label>
+              <input type="text" class="form-input" id="profNotes" placeholder="e.g. Target 8.5+ for Product Placements">
+            </div>
+            <button type="submit" class="btn-premium btn-accent" style="width: 100%; margin-top: 8px;" id="btnCreateProfile">
+              <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i> Save Profile
+            </button>
+          </form>
+        </div>
+
+        <!-- Saved Profiles Database Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title"><i data-lucide="database" style="color: var(--accent-color)"></i>Student Database</h2>
+              <p class="panel-subtitle">Manage, view, and update student accounts in local memory database.</p>
+            </div>
+          </div>
+
+          <!-- Dynamic Search & Filter Controls -->
+          <div class="admin-controls">
+            <div class="search-bar-container" style="flex: 1; min-width: 200px; max-width: 320px;">
+              <i data-lucide="search" class="search-icon-pos" style="width: 16px; height: 16px;"></i>
+              <input type="text" class="search-input" id="adminSearchInput" placeholder="Search student name or roll..." aria-label="Search Students">
+            </div>
+            <div>
+              <select class="select-premium" id="adminFilterStanding" aria-label="Filter by standing" style="padding: 8px 30px 8px 12px; font-size: 0.85rem;">
+                <option value="all">All standings</option>
+                <option value="outstanding">Outstanding (CGPA >= 9.0)</option>
+                <option value="excellent">Excellent (CGPA >= 8.0)</option>
+                <option value="verygood">Very Good (CGPA >= 7.0)</option>
+                <option value="improve">Improve (CGPA < 7.0)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Desktop Student List Table View -->
+          <div class="table-container admin-table-desktop">
+            <table class="history-table">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Roll Number</th>
+                  <th>CGPA</th>
+                  <th>Credits</th>
+                  <th>Standing</th>
+                  <th style="text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminStudentTableBody">
+                <!-- Populated dynamically via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mobile Cards list for smaller devices -->
+          <div class="profiles-list student-card-mobile" id="adminStudentCardsBody" style="max-height: 500px; overflow-y: auto; padding-right: 8px;">
+            <!-- Populated dynamically via JS on mobile layout -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORICAL LOG RECORDS VIEW -->
+    <div id="tab-history" class="view-content" role="tabpanel">
+      <div class="panel">
+        <div class="panel-header" style="flex-wrap: wrap; gap: 16px;">
+          <div>
+            <h2 class="panel-title"><i data-lucide="file-text" style="color: var(--accent-color)"></i>Saved Transcripts</h2>
+            <p class="panel-subtitle">Snapshots of student results saved in local system memory storage.</p>
+          </div>
+          <button class="btn-premium btn-danger" id="btnClearHistory" style="padding: 8px 14px; font-size: 0.8rem;">
+            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Clear Logs
+          </button>
+        </div>
+
+        <div class="history-header">
+          <div class="search-bar-container">
+            <i data-lucide="search" class="search-icon-pos" style="width: 16px; height: 16px;"></i>
+            <input type="text" class="search-input" id="historySearch" placeholder="Search by student name or roll number..." aria-label="Search History">
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Date Saved</th>
+                <th>Student Details</th>
+                <th>CGPA</th>
+                <th>Percentage</th>
+                <th>Credits Earned</th>
+                <th style="text-align: right;">Delete</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Footer -->
+    <footer>
+      Designed for R24 CSE Students • R.V.R & J.C College of Engineering (Autonomous)
+    </footer>
+  </div>
+
+  <!-- Share Report Modal -->
+  <div class="modal-overlay" id="shareModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-weight: 700; display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="share-2" style="color: var(--accent-color)"></i> Share Report Card
+        </h3>
+        <button class="modal-close" id="btnCloseModal" aria-label="Close modal">
+          <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+        </button>
+      </div>
+      <div class="share-content-box" id="shareContentBox"></div>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn-premium btn-accent" id="btnCopyClipboard" style="flex: 1;">
+          <i data-lucide="copy" style="width: 18px; height: 18px;"></i> Copy Text
+        </button>
+        <button class="btn-premium" id="btnSystemShare" style="flex: 1;">
+          <i data-lucide="send" style="width: 18px; height: 18px;"></i> System Share
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- JavaScript Controllers and Data -->
+  <script>
+    // B.Tech CSE R24 Regulation Syllabus & Subject credit list
+    const SYLLABUS = {
+      1: [
+        { name: "Linear Algebra, Calculus and Differential Equations", credits: 3 },
+        { name: "Engineering Physics", credits: 3 },
+        { name: "Basic Electrical and Electronics Engineering", credits: 3 },
+        { name: "Programming for Problem Solving", credits: 4 },
+        { name: "Engineering Physics Lab", credits: 1 },
+        { name: "Basic Electrical and Electronics Engineering Lab", credits: 1 },
+        { name: "Programming for Problem Solving Lab", credits: 1.5 },
+        { name: "Engineering Graphics", credits: 2 },
+        { name: "NSS/NCC/Community Service", credits: 0.5 }
+      ],
+      2: [
+        { name: "Integral Calculus and Transforms", credits: 3 },
+        { name: "Engineering Chemistry", credits: 2 },
+        { name: "Communicative English", credits: 2 },
+        { name: "Digital Logic Design", credits: 3 },
+        { name: "Python Programming", credits: 2 },
+        { name: "Data Structures", credits: 4 },
+        { name: "Engineering Chemistry Lab", credits: 1 },
+        { name: "Communicative English Lab", credits: 1 },
+        { name: "Python Programming Lab", credits: 1 },
+        { name: "Data Structures Lab", credits: 1.5 },
+        { name: "Health and Wellness, Yoga and Sports", credits: 0.5 }
+      ],
+      3: [
+        { name: "Probability, Statistics & Complex Analysis", credits: 3 },
+        { name: "Universal Human Values-II Understanding Harmony", credits: 2 },
+        { name: "Discrete Mathematical Structures", credits: 3 },
+        { name: "Computer Organization", credits: 3 },
+        { name: "Design and Analysis of Algorithms", credits: 3 },
+        { name: "Object Oriented Programming", credits: 3 },
+        { name: "Skill Enhancement Course-1", credits: 2 },
+        { name: "Design and Analysis of Algorithms Lab", credits: 1 },
+        { name: "Object Oriented Programming Lab", credits: 1 }
+      ],
+      4: [
+        { name: "Computational Statistics", credits: 3 },
+        { name: "Artificial Intelligence", credits: 3 },
+        { name: "Database Management Systems", credits: 3 },
+        { name: "Operating Systems", credits: 3 },
+        { name: "Software Engineering", credits: 3 },
+        { name: "Skill Enhancement Course-2", credits: 2 },
+        { name: "Design Thinking and Innovation", credits: 2 },
+        { name: "Artificial Intelligence Lab", credits: 1 },
+        { name: "Database Management Systems Lab", credits: 1 }
+      ],
+      5: [
+        { name: "Automata Theory and Formal Languages", credits: 3 },
+        { name: "Computer Networks", credits: 3 },
+        { name: "Professional Elective-I", credits: 3 },
+        { name: "Professional Elective-II", credits: 3 },
+        { name: "Open Elective-I", credits: 3 },
+        { name: "Web Technologies", credits: 3 },
+        { name: "Skill Enhancement Course-3", credits: 2 },
+        { name: "Summer Internship-1", credits: 1 },
+        { name: "Data Analysis Lab", credits: 1 },
+        { name: "Web Technologies Lab", credits: 1 }
+      ],
+      6: [
+        { name: "Cryptography and Network Security", credits: 3 },
+        { name: "MERN Stack", credits: 3 },
+        { name: "Machine Learning", credits: 3 },
+        { name: "Professional Elective-III", credits: 3 },
+        { name: "Professional Elective-IV", credits: 3 },
+        { name: "Open Elective-II", credits: 3 },
+        { name: "Skill Enhancement Course-4", credits: 2 },
+        { name: "Tinkering Lab", credits: 1 },
+        { name: "MERN Stack Lab", credits: 1 },
+        { name: "Machine Learning Lab", credits: 1 }
+      ],
+      7: [
+        { name: "Humanities Elective", credits: 3 },
+        { name: "Compiler Design", credits: 3 },
+        { name: "Professional Elective-V", credits: 3 },
+        { name: "Professional Elective-VI (MOOCs)", credits: 2 },
+        { name: "Open Elective-III (MOOCs)", credits: 2 },
+        { name: "Skill Enhancement Course-5", credits: 2 },
+        { name: "Summer Internship-2", credits: 2 },
+        { name: "Program Specific Lab", credits: 1 },
+        { name: "Professional Elective-IV Lab", credits: 1 },
+        { name: "Term Paper", credits: 1 }
+      ],
+      8: [
+        { name: "Internship and Project", credits: 12 }
+      ]
+    };
+
+    const TOTAL_REGULATION_CREDITS = 160;
+
+    // Grade to Value Mapping
+    const GRADE_VALUES = {
+      'O': 10,
+      'A+': 9,
+      'A': 8,
+      'B+': 7,
+      'B': 6,
+      'C': 5,
+      'F': 0
+    };
+
+    // ==========================================
+    // 1. LOCAL STORAGE DATABASE ENGINE
+    // ==========================================
+    class LocalStorageDB {
+      static get(key, defaultValue = []) {
+        try {
+          const data = localStorage.getItem(`rvrjc_r24_subj_${key}`);
+          return data ? JSON.parse(data) : defaultValue;
+        } catch (e) {
+          console.error("Local database read error for " + key, e);
+          return defaultValue;
+        }
+      }
+
+      static save(key, data) {
+        try {
+          localStorage.setItem(`rvrjc_r24_subj_${key}`, JSON.stringify(data));
+          return true;
+        } catch (e) {
+          console.error("Local database write error for " + key, e);
+          return false;
+        }
+      }
+    }
+
+    // ==========================================
+    // 2. BACKEND API SERVICE SIMULATOR
+    // ==========================================
+    // ==========================================
+    // 2. BACKEND API SERVICE SIMULATOR
+    // ==========================================
+    class ProfileService {
+      static getAll() {
+        const profiles = LocalStorageDB.get('profiles', []);
+        if (profiles.length === 0) {
+          // Setup rich demo student profiles in local memory database
+          const seedProfiles = [
+            {
+              id: 'profile_1',
+              name: 'Rahul Ramisetti',
+              roll: 'Y24ACS501',
+              password: 'student123',
+              notes: 'Targeting Google & Tier-1 Product Companies',
+              grades: {
+                1: {
+                  "Linear Algebra, Calculus and Differential Equations": "O",
+                  "Engineering Physics": "A+",
+                  "Basic Electrical and Electronics Engineering": "A",
+                  "Programming for Problem Solving": "O",
+                  "Engineering Physics Lab": "O",
+                  "Basic Electrical and Electronics Engineering Lab": "A+",
+                  "Programming for Problem Solving Lab": "O",
+                  "Engineering Graphics": "A",
+                  "NSS/NCC/Community Service": "O"
+                },
+                2: {
+                  "Integral Calculus and Transforms": "A+",
+                  "Engineering Chemistry": "A",
+                  "Communicative English": "O",
+                  "Digital Logic Design": "A+",
+                  "Python Programming": "O",
+                  "Data Structures": "O",
+                  "Engineering Chemistry Lab": "A+",
+                  "Communicative English Lab": "O",
+                  "Python Programming Lab": "O",
+                  "Data Structures Lab": "O",
+                  "Health and Wellness, Yoga and Sports": "A+"
+                }
+              },
+              cgpa: 9.27,
+              completedCredits: 40.5
+            },
+            {
+              id: 'profile_2',
+              name: 'Anusha K.',
+              roll: 'Y24ACS502',
+              password: 'student123',
+              notes: 'Targeting Dream Data Analyst role',
+              grades: {
+                1: {
+                  "Linear Algebra, Calculus and Differential Equations": "A+",
+                  "Engineering Physics": "A",
+                  "Basic Electrical and Electronics Engineering": "B+",
+                  "Programming for Problem Solving": "A",
+                  "Engineering Physics Lab": "A+",
+                  "Basic Electrical and Electronics Engineering Lab": "A",
+                  "Programming for Problem Solving Lab": "A+",
+                  "Engineering Graphics": "B+",
+                  "NSS/NCC/Community Service": "A+"
+                }
+              },
+              cgpa: 8.16,
+              completedCredits: 22.0
+            },
+            {
+              id: 'profile_3',
+              name: 'Siddharth Roy',
+              roll: 'Y24ACS503',
+              password: 'student123',
+              notes: 'Aiming for 8.0+ CGPA this term',
+              grades: {
+                1: {
+                  "Linear Algebra, Calculus and Differential Equations": "B+",
+                  "Engineering Physics": "B",
+                  "Basic Electrical and Electronics Engineering": "C",
+                  "Programming for Problem Solving": "B+",
+                  "Engineering Physics Lab": "A",
+                  "Basic Electrical and Electronics Engineering Lab": "B+",
+                  "Programming for Problem Solving Lab": "B+",
+                  "Engineering Graphics": "C",
+                  "NSS/NCC/Community Service": "A"
+                }
+              },
+              cgpa: 7.02,
+              completedCredits: 22.0
+            },
+            {
+              id: 'profile_4',
+              name: 'Priya Sharma',
+              roll: 'Y24ACS504',
+              password: 'student123',
+              notes: 'Targeting core concepts improvement',
+              grades: {
+                1: {
+                  "Linear Algebra, Calculus and Differential Equations": "C",
+                  "Engineering Physics": "C",
+                  "Basic Electrical and Electronics Engineering": "F",
+                  "Programming for Problem Solving": "C",
+                  "Engineering Physics Lab": "B",
+                  "Basic Electrical and Electronics Engineering Lab": "B+",
+                  "Programming for Problem Solving Lab": "B",
+                  "Engineering Graphics": "F",
+                  "NSS/NCC/Community Service": "B"
+                }
+              },
+              cgpa: 4.86,
+              completedCredits: 22.0
+            }
+          ];
+          LocalStorageDB.save('profiles', seedProfiles);
+          return seedProfiles;
+        }
+        return profiles;
+      }
+
+      static getById(id) {
+        const profiles = this.getAll();
+        return profiles.find(p => p.id === id) || profiles[0];
+      }
+
+      static saveProfile(profile) {
+        const profiles = this.getAll();
+        const index = profiles.findIndex(p => p.id === profile.id);
+        if (index > -1) {
+          profiles[index] = profile;
+        } else {
+          profiles.push(profile);
+        }
+        LocalStorageDB.save('profiles', profiles);
+      }
+
+      static deleteProfile(id) {
+        let profiles = this.getAll();
+        profiles = profiles.filter(p => p.id !== id);
+        LocalStorageDB.save('profiles', profiles);
+        return true;
+      }
+
+      static authenticate(roll, password) {
+        const profiles = this.getAll();
+        return profiles.find(p => p.roll.toLowerCase() === roll.toLowerCase() && p.password === password);
+      }
+    }
+
+    class HistoryService {
+      static getLogs() {
+        return LocalStorageDB.get('history', []);
+      }
+
+      static addLog(log) {
+        const logs = this.getLogs();
+        logs.unshift(log);
+        if (logs.length > 50) logs.pop();
+        LocalStorageDB.save('history', logs);
+      }
+
+      static clearAll() {
+        LocalStorageDB.save('history', []);
+      }
+
+      static deleteLog(timestamp) {
+        let logs = this.getLogs();
+        logs = logs.filter(l => l.timestamp !== timestamp);
+        LocalStorageDB.save('history', logs);
+      }
+    }
+
+    // ==========================================
+    // 3. FRONTEND CONTROLLER
+    // ==========================================
+    class AppController {
+      constructor() {
+        this.trendChart = null;
+        this.creditChart = null;
+        this.celebratedSemesters = {}; // Tracks which semesters have triggered confetti
+        this.adminOverrideMode = false;
+        this.overrideStudentId = null;
+
+        this.initElements();
+        this.setupEventListeners();
+        this.renderAccordions();
+        this.checkAuth();
+        this.updateTheme();
+      }
+
+      initElements() {
+        this.preloader = document.getElementById('preloader');
+        this.semAccordionList = document.getElementById('semestersAccordionList');
+        
+        // Navigation header controls
+        this.profileSelector = document.getElementById('profileSelector');
+        this.adminProfileSelectorContainer = document.getElementById('adminProfileSelectorContainer');
+        this.btnAddProfileShortcut = document.getElementById('btnAddProfileShortcut');
+        this.themeToggle = document.getElementById('themeToggle');
+        this.themeIcon = document.getElementById('themeIcon');
+        this.btnLogout = document.getElementById('btnLogout');
+        this.userStatusBadge = document.getElementById('userStatusBadge');
+        this.userBadgeName = document.getElementById('userBadgeName');
+        
+        // Admin override banner elements
+        this.adminOverrideBadge = document.getElementById('adminOverrideBadge');
+        this.overrideStudentName = document.getElementById('overrideStudentName');
+        this.btnAdminExitOverride = document.getElementById('btnAdminExitOverride');
+
+        // Navigation Tabs
+        this.tabs = document.querySelectorAll('.tab-btn');
+        this.views = document.querySelectorAll('.view-content');
+
+        // Circular CGPA Gauge
+        this.cgpaVal = document.getElementById('cgpaVal');
+        this.percentVal = document.getElementById('percentVal');
+        this.creditsVal = document.getElementById('creditsVal');
+        this.circle = document.querySelector('.progress-ring__circle');
+        this.radius = this.circle.r.baseVal.value;
+        this.circumference = this.radius * 2 * Math.PI;
+        this.circle.style.strokeDasharray = `${this.circumference} ${this.circumference}`;
+        this.circle.style.strokeDashoffset = this.circumference;
+
+        // Prediction details
+        this.placementText = document.getElementById('placementText');
+        this.placementDesc = document.getElementById('placementDesc');
+        this.placementBadge = document.getElementById('placementBadge');
+        this.placementCard = document.getElementById('placementPredictorCard');
+        this.widgetHighestSGPA = document.getElementById('widgetHighestSGPA');
+
+        // Actions
+        this.btnResetAll = document.getElementById('btnResetAll');
+        this.btnSaveCalculation = document.getElementById('btnSaveCalculation');
+        this.btnDownloadPDF = document.getElementById('btnDownloadPDF');
+        this.btnShareResult = document.getElementById('btnShareResult');
+
+        // Authentication Elements
+        this.loginWrapper = document.getElementById('loginWrapper');
+        this.appContainer = document.querySelector('.app-container');
+        this.formStudentLogin = document.getElementById('formStudentLogin');
+        this.formStudentRegister = document.getElementById('formStudentRegister');
+        this.formAdminLogin = document.getElementById('formAdminLogin');
+        
+        // Input fields for authentication
+        this.studentLoginRoll = document.getElementById('studentLoginRoll');
+        this.studentLoginPass = document.getElementById('studentLoginPass');
+        this.studentRegisterName = document.getElementById('studentRegisterName');
+        this.studentRegisterRoll = document.getElementById('studentRegisterRoll');
+        this.studentRegisterPass = document.getElementById('studentRegisterPass');
+        this.adminUsername = document.getElementById('adminUsername');
+        this.adminPassword = document.getElementById('adminPassword');
+
+        // Tab buttons inside Login
+        this.btnTabStudentLogin = document.getElementById('btnTabStudentLogin');
+        this.btnTabStudentRegister = document.getElementById('btnTabStudentRegister');
+        this.btnTabAdminLogin = document.getElementById('btnTabAdminLogin');
+
+        // Visibility password toggles
+        this.toggleStudentLoginPass = document.getElementById('toggleStudentLoginPass');
+        this.toggleStudentRegisterPass = document.getElementById('toggleStudentRegisterPass');
+        this.toggleAdminPass = document.getElementById('toggleAdminPass');
+
+        // Admin dashboard metric counters
+        this.adminStatsGrid = document.getElementById('adminStatsGrid');
+        this.adminStatTotal = document.getElementById('adminStatTotal');
+        this.adminStatAvg = document.getElementById('adminStatAvg');
+        this.adminStatHighest = document.getElementById('adminStatHighest');
+        this.adminStatReady = document.getElementById('adminStatReady');
+
+        // Profile / Student Creator Form
+        this.profileForm = document.getElementById('profileForm');
+        this.profNameInput = document.getElementById('profName');
+        this.profRollInput = document.getElementById('profRoll');
+        this.profPassInput = document.getElementById('profPass');
+        this.profNotesInput = document.getElementById('profNotes');
+
+        // Directory database display boards
+        this.adminSearchInput = document.getElementById('adminSearchInput');
+        this.adminFilterStanding = document.getElementById('adminFilterStanding');
+        this.adminStudentTableBody = document.getElementById('adminStudentTableBody');
+        this.adminStudentCardsBody = document.getElementById('adminStudentCardsBody');
+
+        // History logs
+        this.historySearch = document.getElementById('historySearch');
+        this.historyTableBody = document.getElementById('historyTableBody');
+        this.btnClearHistory = document.getElementById('btnClearHistory');
+
+        // Modal share
+        this.shareModal = document.getElementById('shareModal');
+        this.shareContentBox = document.getElementById('shareContentBox');
+        this.btnCloseModal = document.getElementById('btnCloseModal');
+        this.btnCopyClipboard = document.getElementById('btnCopyClipboard');
+        this.btnSystemShare = document.getElementById('btnSystemShare');
+        
+        this.toastContainer = document.getElementById('toastContainer');
+      }
+
+      setupEventListeners() {
+        // Tab switching in main dashboard
+        this.tabs.forEach(tab => {
+          tab.addEventListener('click', () => this.switchTab(tab.dataset.tab));
+        });
+
+        // Profile Selector change (Admin only)
+        this.profileSelector.addEventListener('change', (e) => {
+          this.switchProfile(e.target.value);
+        });
+
+        // Add Profile Shortcut (Admin only)
+        this.btnAddProfileShortcut.addEventListener('click', () => {
+          this.switchTab('profiles');
+          this.profNameInput.focus();
+        });
+
+        // Theme Toggle
+        this.themeToggle.addEventListener('click', () => this.toggleTheme());
+
+        // Reset grades inputs
+        this.btnResetAll.addEventListener('click', () => this.resetGrades());
+
+        // Admin Panel student registration
+        this.profileForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.createNewProfile();
+        });
+
+        // Search and filter controls inside Student Directory
+        this.adminSearchInput.addEventListener('input', () => this.renderAdminDashboard());
+        this.adminFilterStanding.addEventListener('change', () => this.renderAdminDashboard());
+
+        // Search Bar in History Log
+        this.historySearch.addEventListener('input', () => this.renderHistory());
+
+        // Clear History
+        this.btnClearHistory.addEventListener('click', () => this.clearHistoryLogs());
+
+        // Save progress record
+        this.btnSaveCalculation.addEventListener('click', () => this.saveCalculationToHistory());
+
+        // Export PDF Transcript
+        this.btnDownloadPDF.addEventListener('click', () => this.exportReportPDF());
+
+        // Share result overlay controls
+        this.btnShareResult.addEventListener('click', () => this.openShareModal());
+        this.btnCloseModal.addEventListener('click', () => this.closeShareModal());
+        this.btnCopyClipboard.addEventListener('click', () => this.copyShareReport());
+        this.btnSystemShare.addEventListener('click', () => this.systemShareReport());
+
+        // Setup Authentication Screen Listeners
+        this.btnTabStudentLogin.addEventListener('click', () => this.switchLoginTab('studentLogin'));
+        this.btnTabStudentRegister.addEventListener('click', () => this.switchLoginTab('studentRegister'));
+        this.btnTabAdminLogin.addEventListener('click', () => this.switchLoginTab('adminLogin'));
+
+        this.toggleStudentLoginPass.addEventListener('click', () => this.togglePasswordVisibility('studentLoginPass', this.toggleStudentLoginPass));
+        this.toggleStudentRegisterPass.addEventListener('click', () => this.togglePasswordVisibility('studentRegisterPass', this.toggleStudentRegisterPass));
+        this.toggleAdminPass.addEventListener('click', () => this.togglePasswordVisibility('adminPassword', this.toggleAdminPass));
+
+        this.formStudentLogin.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleStudentLogin();
+        });
+        
+        this.formStudentRegister.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleStudentRegistration();
+        });
+
+        this.formAdminLogin.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.handleAdminLogin();
+        });
+
+        this.btnLogout.addEventListener('click', () => this.logout());
+        this.btnAdminExitOverride.addEventListener('click', () => this.exitAdminOverride());
+
+        // Close modal when clicking background
+        window.addEventListener('click', (e) => {
+          if (e.target === this.shareModal) this.closeShareModal();
+        });
+      }
+
+      hidePreloader() {
+        setTimeout(() => {
+          this.preloader.style.opacity = '0';
+          this.preloader.style.visibility = 'hidden';
+        }, 500);
+      }
+
+      // ==========================================
+      // Unified Authentication Controller
+      // ==========================================
+      checkAuth() {
+        const session = localStorage.getItem('rvrjc_session');
+        if (!session) {
+          this.loginWrapper.style.display = 'flex';
+          this.appContainer.style.display = 'none';
+          this.hidePreloader();
+          return;
+        }
+
+        try {
+          const sessionData = JSON.parse(session);
+          this.currentUserRole = sessionData.role;
+          this.currentUserProfileId = sessionData.profileId;
+          this.currentUserName = sessionData.name || 'User';
+
+          this.loginWrapper.style.display = 'none';
+          this.appContainer.style.display = 'flex';
+
+          if (this.currentUserRole === 'admin') {
+            // Configure administrative portal
+            this.userStatusBadge.style.display = 'flex';
+            this.userStatusBadge.className = 'admin-active-badge';
+            this.userStatusBadge.style.borderColor = 'rgba(239, 68, 68, 0.3)';
+            this.userStatusBadge.style.color = '#ef4444';
+            this.userBadgeName.textContent = 'Admin Mode';
+
+            this.adminProfileSelectorContainer.style.display = 'flex';
+            this.btnAddProfileShortcut.style.display = 'flex';
+            this.adminStatsGrid.style.display = 'grid';
+
+            const profilesTabBtn = document.querySelector('.tab-btn[data-tab="profiles"]');
+            if (profilesTabBtn) {
+              profilesTabBtn.style.display = 'flex';
+              profilesTabBtn.innerHTML = '<i data-lucide="shield" style="width: 16px; height: 16px;"></i> Student Database';
+            }
+
+            if (this.adminOverrideMode && this.overrideStudentId) {
+              this.currentProfileId = this.overrideStudentId;
+            } else {
+              this.currentProfileId = localStorage.getItem('rvrjc_r24_subj_current_profile_id') || 'default';
+            }
+
+            this.loadCurrentProfile();
+            this.renderAdminDashboard();
+          } else {
+            // Configure standard student view
+            this.userStatusBadge.style.display = 'flex';
+            this.userStatusBadge.className = 'admin-active-badge';
+            this.userStatusBadge.style.borderColor = 'rgba(16, 185, 129, 0.3)';
+            this.userStatusBadge.style.color = '#10b981';
+            this.userBadgeName.textContent = `${this.currentUserName} (Student)`;
+
+            this.adminProfileSelectorContainer.style.display = 'none';
+            this.btnAddProfileShortcut.style.display = 'none';
+            this.adminStatsGrid.style.display = 'none';
+
+            const profilesTabBtn = document.querySelector('.tab-btn[data-tab="profiles"]');
+            if (profilesTabBtn) {
+              profilesTabBtn.style.display = 'none';
+            }
+
+            this.currentProfileId = this.currentUserProfileId;
+            this.loadCurrentProfile();
+
+            const activeTabBtn = document.querySelector('.tab-btn.active');
+            if (activeTabBtn && activeTabBtn.dataset.tab === 'profiles') {
+              this.switchTab('calculator');
+            }
+          }
+          lucide.createIcons();
+        } catch (e) {
+          console.error("Session configuration crash", e);
+          this.logout();
+        }
+        this.hidePreloader();
+      }
+
+      switchLoginTab(tab) {
+        const tabs = [this.btnTabStudentLogin, this.btnTabStudentRegister, this.btnTabAdminLogin];
+        const forms = [this.formStudentLogin, this.formStudentRegister, this.formAdminLogin];
+
+        tabs.forEach(t => t.classList.remove('active'));
+        forms.forEach(f => f.classList.remove('active'));
+
+        if (tab === 'studentLogin') {
+          this.btnTabStudentLogin.classList.add('active');
+          this.formStudentLogin.classList.add('active');
+        } else if (tab === 'studentRegister') {
+          this.btnTabStudentRegister.classList.add('active');
+          this.formStudentRegister.classList.add('active');
+        } else if (tab === 'adminLogin') {
+          this.btnTabAdminLogin.classList.add('active');
+          this.formAdminLogin.classList.add('active');
+        }
+      }
+
+      togglePasswordVisibility(inputId, toggleIcon) {
+        const input = document.getElementById(inputId);
+        if (input.type === 'password') {
+          input.type = 'text';
+          toggleIcon.setAttribute('data-lucide', 'eye-off');
+        } else {
+          input.type = 'password';
+          toggleIcon.setAttribute('data-lucide', 'eye');
+        }
+        lucide.createIcons();
+      }
+
+      handleStudentLogin() {
+        const roll = this.studentLoginRoll.value.trim();
+        const password = this.studentLoginPass.value;
+
+        if (!roll || !password) {
+          this.showToast("Please fill in credentials!", "error");
+          return;
+        }
+
+        const student = ProfileService.authenticate(roll, password);
+        if (student) {
+          const sessionData = {
+            role: 'student',
+            profileId: student.id,
+            name: student.name
+          };
+          localStorage.setItem('rvrjc_session', JSON.stringify(sessionData));
+          this.showToast(`Welcome back, ${student.name}!`, 'success');
+          this.formStudentLogin.reset();
+          this.checkAuth();
+        } else {
+          this.showToast("Invalid student Roll Number or Password!", "error");
+        }
+      }
+
+      handleStudentRegistration() {
+        const name = this.studentRegisterName.value.trim();
+        const roll = this.studentRegisterRoll.value.trim().toUpperCase();
+        const password = this.studentRegisterPass.value;
+
+        if (!name || !roll || !password) {
+          this.showToast("Please fill in registration fields!", "error");
+          return;
+        }
+
+        const existing = ProfileService.getAll().find(p => p.roll.toUpperCase() === roll);
+        if (existing) {
+          this.showToast("This Student Roll is already registered!", "error");
+          return;
+        }
+
+        const newId = 'profile_' + Date.now();
+        const newProfile = {
+          id: newId,
+          name: name,
+          roll: roll,
+          password: password,
+          notes: 'Targeting high academic standing',
+          grades: {},
+          cgpa: 0.00,
+          completedCredits: 0
+        };
+
+        ProfileService.saveProfile(newProfile);
+
+        const sessionData = {
+          role: 'student',
+          profileId: newId,
+          name: name
+        };
+        localStorage.setItem('rvrjc_session', JSON.stringify(sessionData));
+        this.showToast(`Account registered successfully! Welcome, ${name}!`, 'success');
+        this.formStudentRegister.reset();
+        this.checkAuth();
+      }
+
+      handleAdminLogin() {
+        const username = this.adminUsername.value.trim();
+        const password = this.adminPassword.value;
+
+        if (username === 'admin' && password === 'admin123') {
+          const sessionData = {
+            role: 'admin',
+            name: 'Administrator'
+          };
+          localStorage.setItem('rvrjc_session', JSON.stringify(sessionData));
+          this.showToast("Logged in as Administrator", "success");
+          this.formAdminLogin.reset();
+          this.checkAuth();
+        } else {
+          this.showToast("Invalid administrative keys!", "error");
+        }
+      }
+
+      logout() {
+        if (this.adminOverrideMode) {
+          this.exitAdminOverride();
+        }
+        localStorage.removeItem('rvrjc_session');
+        this.loginWrapper.style.display = 'flex';
+        this.appContainer.style.display = 'none';
+        this.showToast("Session closed.", "info");
+      }
+
+      // ==========================================
+      // Administrative Override System
+      // ==========================================
+      startAdminOverride(studentId) {
+        const student = ProfileService.getById(studentId);
+        if (!student) return;
+
+        this.adminOverrideMode = true;
+        this.overrideStudentId = studentId;
+
+        // Toggle warning state in header
+        this.adminOverrideBadge.style.display = 'flex';
+        this.overrideStudentName.textContent = `${student.name} (${student.roll})`;
+
+        // Load targeted student profile in calculator
+        this.currentProfileId = studentId;
+        this.loadCurrentProfile();
+
+        this.switchTab('calculator');
+        this.showToast(`Admin Override: Editing grades for ${student.name}`, 'info');
+      }
+
+      exitAdminOverride() {
+        this.adminOverrideMode = false;
+        this.overrideStudentId = null;
+        this.adminOverrideBadge.style.display = 'none';
+
+        this.checkAuth();
+        this.switchTab('profiles');
+        this.showToast("Exited Admin Override mode.", "info");
+      }
+
+      // ==========================================
+      // Admin Dashboard Metric Calculations & Directory
+      // ==========================================
+      renderAdminDashboard() {
+        const profiles = ProfileService.getAll();
+        
+        // 1. Dynamic metric widgets compiling
+        const total = profiles.length;
+        this.adminStatTotal.textContent = total;
+
+        const sumCGPA = profiles.reduce((acc, p) => acc + (p.cgpa || 0), 0);
+        const avg = total > 0 ? (sumCGPA / total) : 0.00;
+        this.adminStatAvg.textContent = avg.toFixed(2);
+
+        const maxCGPA = profiles.reduce((acc, p) => Math.max(acc, (p.cgpa || 0)), 0);
+        this.adminStatHighest.textContent = maxCGPA.toFixed(2);
+
+        const readyCount = profiles.filter(p => p.cgpa >= 7.0).length;
+        const readyRatio = total > 0 ? ((readyCount / total) * 100) : 0.0;
+        this.adminStatReady.textContent = `${readyRatio.toFixed(1)}%`;
+
+        // 2. Real-time Search & Standing Directory Filters
+        const searchQuery = this.adminSearchInput.value.toLowerCase().trim();
+        const filterVal = this.adminFilterStanding.value;
+
+        let filtered = [...profiles];
+
+        if (searchQuery) {
+          filtered = filtered.filter(p => 
+            p.name.toLowerCase().includes(searchQuery) ||
+            p.roll.toLowerCase().includes(searchQuery)
+          );
+        }
+
+        if (filterVal !== 'all') {
+          filtered = filtered.filter(p => {
+            const cgpa = p.cgpa || 0;
+            if (filterVal === 'outstanding') return cgpa >= 9.0;
+            if (filterVal === 'excellent') return cgpa >= 8.0 && cgpa < 9.0;
+            if (filterVal === 'verygood') return cgpa >= 7.0 && cgpa < 8.0;
+            if (filterVal === 'improve') return cgpa < 7.0;
+            return true;
+          });
+        }
+
+        // 3. Clear and render tables (Desktop + Mobile grids)
+        this.adminStudentTableBody.innerHTML = '';
+        this.adminStudentCardsBody.innerHTML = '';
+
+        if (filtered.length === 0) {
+          const emptyRow = `
+            <tr>
+              <td colspan="6">
+                <div class="history-empty-state">
+                  <i data-lucide="users" style="width:32px; height:32px; color:var(--text-muted);"></i>
+                  <span>No student profiles match the filter.</span>
+                </div>
+              </td>
+            </tr>
+          `;
+          this.adminStudentTableBody.innerHTML = emptyRow;
+          this.adminStudentCardsBody.innerHTML = `
+            <div class="history-empty-state">
+              <i data-lucide="users" style="width:32px; height:32px; color:var(--text-muted);"></i>
+              <span>No student profiles match the filter.</span>
+            </div>
+          `;
+          lucide.createIcons();
+          return;
+        }
+
+        filtered.forEach(student => {
+          const isBase = student.id === 'default' || student.id === 'profile_1';
+          const standingClass = this.getStandingBadgeClass(student.cgpa);
+          const standingText = this.getStandingText(student.cgpa);
+
+          // Render Desktop Table row
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td>
+              <strong style="color:var(--text-primary); font-size:0.95rem;">${student.name}</strong>
+              <div style="font-size:0.75rem; color:var(--text-muted);">${student.notes || 'No description'}</div>
+            </td>
+            <td style="font-weight:600; font-size:0.85rem;">${student.roll}</td>
+            <td>
+              <span style="font-weight: 800; font-family: 'Orbitron', sans-serif; font-size: 1.05rem; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">
+                ${(student.cgpa || 0).toFixed(2)}
+              </span>
+            </td>
+            <td style="font-weight:600; font-size:0.85rem; color:var(--text-secondary);">${student.completedCredits || 0} / 160</td>
+            <td>
+              <span class="badge-standing ${standingClass}">${standingText}</span>
+            </td>
+            <td style="text-align:right; white-space:nowrap;">
+              <div style="display:inline-flex; gap:8px;">
+                <button class="btn-premium" style="padding:6px 12px; font-size:0.75rem;" onclick="app.startAdminOverride('${student.id}')">
+                  <i data-lucide="edit-3" style="width:14px; height:14px;"></i> Edit
+                </button>
+                <button class="btn-premium btn-danger" style="padding:6px 12px; font-size:0.75rem;" onclick="app.deleteStudentProfile('${student.id}')" ${isBase ? 'disabled' : ''}>
+                  <i data-lucide="trash-2" style="width:14px; height:14px;"></i>
+                </button>
+              </div>
+            </td>
+          `;
+          this.adminStudentTableBody.appendChild(tr);
+
+          // Render Mobile Card grid
+          const card = document.createElement('div');
+          card.className = `profile-card ${student.id === this.currentProfileId ? 'active' : ''}`;
+          card.innerHTML = `
+            <div class="profile-card-header">
+              <div>
+                <div class="profile-card-name">${student.name}</div>
+                <div class="profile-card-roll">Roll ID: ${student.roll}</div>
+                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:4px; font-style:italic;">
+                  ${student.notes || 'No target description'}
+                </div>
+              </div>
+              <div class="profile-card-cgpa-badge" style="font-family:'Orbitron', sans-serif;">${(student.cgpa || 0).toFixed(2)}</div>
+            </div>
+            <div>
+              <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:6px; display:flex; justify-content:space-between;">
+                <span>Completed Credits:</span>
+                <strong>${student.completedCredits || 0} / 160</strong>
+              </div>
+              <div style="font-size:0.75rem; color:var(--text-secondary); margin-bottom:12px; display:flex; justify-content:space-between;">
+                <span>Standing Standing:</span>
+                <span class="badge-standing ${standingClass}">${standingText}</span>
+              </div>
+              <div class="profile-card-actions" style="display:flex; gap:8px;">
+                <button class="btn-premium btn-profile-action" onclick="app.startAdminOverride('${student.id}')" style="background:rgba(99,102,241,0.1); border-color:rgba(99,102,241,0.25);">
+                  Edit Grades
+                </button>
+                <button class="btn-premium btn-danger btn-profile-action" onclick="app.deleteStudentProfile('${student.id}')" ${isBase ? 'disabled' : ''}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          `;
+          this.adminStudentCardsBody.appendChild(card);
+        });
+
+        lucide.createIcons();
+      }
+
+      getStandingBadgeClass(cgpa) {
+        if (!cgpa || cgpa === 0) return 'badge-improve';
+        if (cgpa >= 9.0) return 'badge-outstanding';
+        if (cgpa >= 8.0) return 'badge-excellent';
+        if (cgpa >= 7.0) return 'badge-very-good';
+        return 'badge-improve';
+      }
+
+      getStandingText(cgpa) {
+        if (!cgpa || cgpa === 0) return 'Improve';
+        if (cgpa >= 9.0) return 'Outstanding';
+        if (cgpa >= 8.0) return 'Excellent';
+        if (cgpa >= 7.0) return 'Very Good';
+        return 'Improve';
+      }
+
+      deleteStudentProfile(studentId) {
+        if (studentId === 'default' || studentId === 'profile_1') {
+          this.showToast("Cannot delete baseline system profile!", "error");
+          return;
+        }
+
+        const student = ProfileService.getById(studentId);
+        if (!student) return;
+
+        if (confirm(`Are you sure you want to permanently delete the profile of "${student.name}"? This action cannot be reversed.`)) {
+          ProfileService.deleteProfile(studentId);
+          this.showToast(`Student record for ${student.name} deleted.`, 'warning');
+          this.renderAdminDashboard();
+        }
+      }
+
+      createNewProfile() {
+        const name = this.profNameInput.value.trim();
+        const roll = this.profRollInput.value.trim().toUpperCase();
+        const password = this.profPassInput.value || 'student123';
+        const notes = this.profNotesInput.value.trim();
+
+        if (!name || !roll) {
+          this.showToast("Please input required Student profile details!", "error");
+          return;
+        }
+
+        const existing = ProfileService.getAll().find(p => p.roll.toUpperCase() === roll);
+        if (existing) {
+          this.showToast("This Student Roll number is already registered!", "error");
+          return;
+        }
+
+        const newId = 'profile_' + Date.now();
+        const newProfile = {
+          id: newId,
+          name: name,
+          roll: roll,
+          password: password,
+          notes: notes,
+          grades: {},
+          cgpa: 0.00,
+          completedCredits: 0
+        };
+
+        ProfileService.saveProfile(newProfile);
+        this.profileForm.reset();
+        this.profPassInput.value = 'student123'; // Reset password default
+
+        this.showToast(`Registered student profile for "${name}"!`, 'success');
+        this.renderAdminDashboard();
+      }
+
+      // ==========================================
+      // Dashboard UI Switcher & Controls
+      // ==========================================
+      switchTab(tabId) {
+        this.tabs.forEach(tab => {
+          if (tab.dataset.tab === tabId) {
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
+          } else {
+            tab.classList.remove('active');
+            tab.setAttribute('aria-selected', 'false');
+          }
+        });
+
+        this.views.forEach(view => {
+          if (view.id === `tab-${tabId}`) {
+            view.classList.add('active');
+          } else {
+            view.classList.remove('active');
+          }
+        });
+
+        if (tabId === 'analytics') this.renderAnalyticsData();
+        if (tabId === 'profiles') this.renderAdminDashboard();
+        if (tabId === 'history') this.renderHistory();
+      }
+
+      toggleTheme() {
+        const currentTheme = document.body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('rvrjc_r24_subj_theme', newTheme);
+        this.updateTheme();
+        
+        if (this.trendChart || this.creditChart) this.renderAnalyticsData();
+        this.showToast(`Switched theme to ${newTheme}!`, 'info');
+      }
+
+      updateTheme() {
+        const theme = localStorage.getItem('rvrjc_r24_subj_theme') || 'dark';
+        document.body.setAttribute('data-theme', theme);
+        if (theme === 'dark') {
+          this.themeIcon.setAttribute('data-lucide', 'sun');
+        } else {
+          this.themeIcon.setAttribute('data-lucide', 'moon');
+        }
+        lucide.createIcons();
+      }
+
+      showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        let iconName = 'check-circle';
+        if (type === 'error') iconName = 'alert-triangle';
+        if (type === 'info') iconName = 'info';
+        if (type === 'warning') iconName = 'alert-circle';
+
+        toast.innerHTML = `
+          <i data-lucide="${iconName}" style="flex-shrink:0;"></i>
+          <div style="font-size:0.85rem; font-weight:600;">${message}</div>
+        `;
+        
+        this.toastContainer.appendChild(toast);
+        lucide.createIcons();
+
+        setTimeout(() => {
+          toast.style.animation = 'slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) reverse forwards';
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+      // ==========================================
+      // Calculator Accordions Population & Selection
+      // ==========================================
+      renderAccordions() {
+        this.semAccordionList.innerHTML = '';
+        for (let sem = 1; sem <= 8; sem++) {
+          const accordion = document.createElement('div');
+          accordion.className = 'semester-accordion';
+          accordion.id = `semAccordion-${sem}`;
+
+          const totalSemCredits = SYLLABUS[sem].reduce((acc, subj) => acc + subj.credits, 0);
+
+          accordion.innerHTML = `
+            <div class="accordion-header" id="accHeader-${sem}">
+              <div class="header-details">
+                <span class="sem-badge">Sem ${sem}</span>
+                <span class="sem-title">Semester ${sem}</span>
+              </div>
+              <div class="header-stats">
+                <span class="stat-indicator" id="semSGPAIndicator-${sem}">SGPA: --</span>
+                <span class="stat-indicator" id="semCreditsIndicator-${sem}">Credits: 0 / ${totalSemCredits}</span>
+                <i data-lucide="chevron-down" class="chevron-icon"></i>
+              </div>
+            </div>
+            <div class="accordion-body">
+              <div class="subjects-list" id="subjectsList-${sem}">
+                <!-- Populated dynamically via JS -->
+              </div>
+            </div>
+          `;
+
+          this.semAccordionList.appendChild(accordion);
+
+          document.getElementById(`accHeader-${sem}`).addEventListener('click', () => {
+            this.toggleAccordion(sem);
+          });
+
+          const listContainer = document.getElementById(`subjectsList-${sem}`);
+          SYLLABUS[sem].forEach((subj, index) => {
+            const row = document.createElement('div');
+            row.className = 'subject-row';
+            row.innerHTML = `
+              <div class="subject-info">
+                <span class="subject-name">${subj.name}</span>
+                <span class="subject-credits">${subj.credits} Credits</span>
+              </div>
+              <div>
+                <select class="grade-dropdown" data-semester="${sem}" data-index="${index}" aria-label="Grade for ${subj.name}">
+                  <option value="">Grade</option>
+                  <option value="O">O (10)</option>
+                  <option value="A+">A+ (9)</option>
+                  <option value="A">A (8)</option>
+                  <option value="B+">B+ (7)</option>
+                  <option value="B">B (6)</option>
+                  <option value="C">C (5)</option>
+                  <option value="F">F (0)</option>
+                </select>
+              </div>
+            `;
+            listContainer.appendChild(row);
+
+            const dropdown = row.querySelector('.grade-dropdown');
+            dropdown.addEventListener('change', (e) => {
+              this.handleGradeSelection(sem, subj.name, e.target.value);
+            });
+          });
+        }
+        lucide.createIcons();
+      }
+
+      toggleAccordion(sem) {
+        const accordion = document.getElementById(`semAccordion-${sem}`);
+        const isActive = accordion.classList.contains('active');
+        
+        for (let i = 1; i <= 8; i++) {
+          const acc = document.getElementById(`semAccordion-${i}`);
+          const body = acc.querySelector('.accordion-body');
+          acc.classList.remove('active');
+          body.style.maxHeight = null;
+        }
+
+        if (!isActive) {
+          accordion.classList.add('active');
+          const body = accordion.querySelector('.accordion-body');
+          body.style.maxHeight = (SYLLABUS[sem].length * 80 + 60) + "px";
+        }
+      }
+
+      loadProfileDropdown() {
+        const profiles = ProfileService.getAll();
+        this.profileSelector.innerHTML = '';
+        profiles.forEach(profile => {
+          const opt = document.createElement('option');
+          opt.value = profile.id;
+          opt.textContent = `${profile.name} (${profile.roll})`;
+          if (profile.id === this.currentProfileId) opt.selected = true;
+          this.profileSelector.appendChild(opt);
+        });
+      }
+
+      switchProfile(profileId) {
+        this.currentProfileId = profileId;
+        localStorage.setItem('rvrjc_r24_subj_current_profile_id', profileId);
+        this.loadCurrentProfile();
+        this.showToast(`Loaded profile for ${this.currentProfile.name}`, 'info');
+      }
+
+      loadCurrentProfile() {
+        if (this.currentUserRole === 'admin') {
+          this.loadProfileDropdown();
+        }
+        this.currentProfile = ProfileService.getById(this.currentProfileId);
+        this.celebratedSemesters = {};
+
+        document.querySelectorAll('.grade-dropdown').forEach(select => {
+          select.value = "";
+        });
+
+        const grades = this.currentProfile.grades || {};
+        for (let sem = 1; sem <= 8; sem++) {
+          const semGrades = grades[sem] || {};
+          const selectElements = document.querySelectorAll(`.grade-dropdown[data-semester="${sem}"]`);
+          
+          selectElements.forEach(select => {
+            const index = select.dataset.index;
+            const subject = SYLLABUS[sem][index];
+            if (semGrades[subject.name] !== undefined) {
+              select.value = semGrades[subject.name];
+            }
+          });
+        }
+
+        this.calculateMetrics();
+      }
+
+      handleGradeSelection(semester, subjectName, gradeValue) {
+        if (!this.currentProfile.grades) {
+          this.currentProfile.grades = {};
+        }
+        if (!this.currentProfile.grades[semester]) {
+          this.currentProfile.grades[semester] = {};
+        }
+
+        if (gradeValue === "") {
+          delete this.currentProfile.grades[semester][subjectName];
+        } else {
+          this.currentProfile.grades[semester][subjectName] = gradeValue;
+        }
+
+        this.calculateMetrics();
+        this.saveCurrentProfileToStorage();
+      }
+
+      saveCurrentProfileToStorage() {
+        const cgpa = parseFloat(this.cgpaVal.textContent) || 0.00;
+        const totalCreditsVal = this.creditsVal.textContent.split(' / ')[0];
+        const completedCredits = parseInt(totalCreditsVal) || 0;
+
+        this.currentProfile.cgpa = cgpa;
+        this.currentProfile.completedCredits = completedCredits;
+
+        ProfileService.saveProfile(this.currentProfile);
+      }
+
+      calculateMetrics() {
+        let cumulativePoints = 0;
+        let cumulativeCredits = 0;
+        let highestSGPA = 0;
+        const semSGPAs = {};
+
+        const grades = this.currentProfile.grades || {};
+
+        for (let sem = 1; sem <= 8; sem++) {
+          const semGrades = grades[sem] || {};
+          let semWeightedPoints = 0;
+          let semCreditsGraded = 0;
+
+          SYLLABUS[sem].forEach(subj => {
+            const grade = semGrades[subj.name];
+            if (grade !== undefined && grade !== "") {
+              const gradePoint = GRADE_VALUES[grade];
+              semWeightedPoints += (gradePoint * subj.credits);
+              semCreditsGraded += subj.credits;
+            }
+          });
+
+          const totalSemCredits = SYLLABUS[sem].reduce((acc, s) => acc + s.credits, 0);
+          const sgpaIndicator = document.getElementById(`semSGPAIndicator-${sem}`);
+          const creditsIndicator = document.getElementById(`semCreditsIndicator-${sem}`);
+          const acc = document.getElementById(`semAccordion-${sem}`);
+
+          if (semCreditsGraded > 0) {
+            const sgpa = semWeightedPoints / semCreditsGraded;
+            const sgpaRounded = Math.round((sgpa + Number.EPSILON) * 100) / 100;
+            
+            semSGPAs[sem] = sgpaRounded;
+
+            sgpaIndicator.textContent = `SGPA: ${sgpaRounded.toFixed(2)}`;
+            creditsIndicator.textContent = `Credits: ${semCreditsGraded} / ${totalSemCredits}`;
+            acc.classList.add('active');
+
+            if (sgpaRounded > highestSGPA) highestSGPA = sgpaRounded;
+
+            if (sgpaRounded >= 9.0 && semCreditsGraded === totalSemCredits && !this.celebratedSemesters[sem]) {
+              this.triggerConfetti();
+              this.celebratedSemesters[sem] = true;
+              this.showToast(`Outstanding! Semester ${sem} SGPA is ${sgpaRounded.toFixed(2)}! 🎉`, 'success');
+            }
+            if (sgpaRounded < 9.0 || semCreditsGraded < totalSemCredits) {
+              this.celebratedSemesters[sem] = false;
+            }
+
+            cumulativePoints += semWeightedPoints;
+            cumulativeCredits += semCreditsGraded;
+          } else {
+            sgpaIndicator.textContent = `SGPA: --`;
+            creditsIndicator.textContent = `Credits: 0 / ${totalSemCredits}`;
+            acc.classList.remove('active');
+          }
+        }
+
+        const finalCGPA = cumulativeCredits > 0 ? (cumulativePoints / cumulativeCredits) : 0.00;
+        const finalCGPARounded = Math.round((finalCGPA + Number.EPSILON) * 100) / 100;
+
+        let percentage = (finalCGPARounded - 0.50) * 10;
+        if (percentage < 0) percentage = 0.0;
+        const finalPercentageRounded = Math.round((percentage + Number.EPSILON) * 10) / 10;
+
+        this.cgpaVal.textContent = finalCGPARounded.toFixed(2);
+        this.percentVal.textContent = `${finalPercentageRounded.toFixed(1)}%`;
+        this.creditsVal.textContent = `${cumulativeCredits} / ${TOTAL_REGULATION_CREDITS}`;
+        this.widgetHighestSGPA.textContent = highestSGPA.toFixed(2);
+
+        const offset = this.circumference - (finalCGPARounded / 10) * this.circumference;
+        this.circle.style.strokeDashoffset = offset;
+
+        this.updatePlacementPredictor(finalCGPARounded, cumulativeCredits);
+      }
+
+      updatePlacementPredictor(cgpa, credits) {
+        if (credits === 0) {
+          this.placementText.textContent = "No Grades Selected";
+          this.placementDesc.textContent = "Enter subject grades to view eligible companies & recruitment options.";
+          this.placementBadge.textContent = "N/A";
+          this.placementBadge.className = "prediction-badge";
+          this.placementCard.style.borderLeftColor = "var(--border-color)";
+          return;
+        }
+
+        if (cgpa >= 9.0) {
+          this.placementText.textContent = "Top Product Companies Eligible";
+          this.placementDesc.textContent = "Outstanding standing! Eligible for Tier-1 Product developers: Google, Microsoft, Adobe, Amazon, and super-dream recruitment offers (20+ LPA).";
+          this.placementBadge.textContent = "Outstanding";
+          this.placementBadge.className = "prediction-badge badge-outstanding";
+          this.placementCard.style.borderLeftColor = "var(--success-color)";
+        } else if (cgpa >= 8.0) {
+          this.placementText.textContent = "Most Software Companies Eligible";
+          this.placementDesc.textContent = "Excellent rank! Eligible for all primary IT product developers & top corporate players: Oracle, Salesforce, Accolite, TCS Digital, and major MNC developers (8-15 LPA).";
+          this.placementBadge.textContent = "Excellent";
+          this.placementBadge.className = "prediction-badge badge-excellent";
+          this.placementCard.style.borderLeftColor = "var(--accent-color)";
+        } else if (cgpa >= 7.0) {
+          this.placementText.textContent = "Service Companies & Startups Eligible";
+          this.placementDesc.textContent = "Very Good profile. Eligible for mass corporate recruitment systems & tech startups: TCS Ninja, Cognizant, Wipro, Infosys, Capgemini, and niche tech developers (4.5-8 LPA).";
+          this.placementBadge.textContent = "Very Good";
+          this.placementBadge.className = "prediction-badge badge-very-good";
+          this.placementCard.style.borderLeftColor = "var(--warning-color)";
+        } else {
+          this.placementText.textContent = "Improvement Needed";
+          this.placementDesc.textContent = "Your standing is below 7.00. Focus on expanding technical skills, data structures, and raising CGPA to 7.0+ to clear placement eligibility criteria.";
+          this.placementBadge.textContent = "Improve";
+          this.placementBadge.className = "prediction-badge badge-improve";
+          this.placementCard.style.borderLeftColor = "var(--error-color)";
+        }
+      }
+
+      resetGrades() {
+        if (confirm("Are you sure you want to clear all grade inputs for the current profile? This cannot be undone.")) {
+          this.currentProfile.grades = {};
+          this.currentProfile.cgpa = 0.00;
+          this.currentProfile.completedCredits = 0;
+          this.celebratedSemesters = {};
+
+          document.querySelectorAll('.grade-dropdown').forEach(select => {
+            select.value = "";
+          });
+
+          this.calculateMetrics();
+          this.saveCurrentProfileToStorage();
+          this.showToast("All grades cleared successfully!", 'info');
+        }
+      }
+
+      triggerConfetti() {
+        confetti({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ['#8b5cf6', '#6366f1', '#3b82f6', '#10b981', '#f59e0b']
+        });
+      }
+
+      // ==========================================
+      // History Snapshot Logs
+      // ==========================================
+      saveCalculationToHistory() {
+        const cgpa = parseFloat(this.cgpaVal.textContent);
+        if (isNaN(cgpa) || cgpa === 0) {
+          this.showToast("Cannot save empty calculations!", "error");
+          return;
+        }
+
+        const totalCreditsVal = this.creditsVal.textContent.split(' / ')[0];
+        const completedCredits = parseInt(totalCreditsVal) || 0;
+        const percentage = this.percentVal.textContent;
+
+        const record = {
+          timestamp: new Date().toISOString(),
+          profileName: this.currentProfile.name,
+          profileRoll: this.currentProfile.roll,
+          cgpa: cgpa.toFixed(2),
+          percentage: percentage,
+          credits: completedCredits
+        };
+
+        HistoryService.addLog(record);
+        this.showToast("Result snapshot saved to History Log!", "success");
+        this.renderHistory();
+      }
+
+      renderHistory() {
+        const searchQuery = this.historySearch.value.toLowerCase().trim();
+        let logs = HistoryService.getLogs();
+
+        if (searchQuery) {
+          logs = logs.filter(l => 
+            l.profileName.toLowerCase().includes(searchQuery) || 
+            l.profileRoll.toLowerCase().includes(searchQuery)
+          );
+        }
+
+        this.historyTableBody.innerHTML = '';
+        if (logs.length === 0) {
+          this.historyTableBody.innerHTML = `
+            <tr>
+              <td colspan="6">
+                <div class="history-empty-state">
+                  <i data-lucide="inbox" style="width:32px; height:32px; color:var(--text-muted);"></i>
+                  <span>No saved calculation records found.</span>
+                </div>
+              </td>
+            </tr>
+          `;
+          lucide.createIcons();
+          return;
+        }
+
+        logs.forEach(log => {
+          const dateStr = new Date(log.timestamp).toLocaleString();
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="font-size:0.8rem; font-weight:500;">${dateStr}</td>
+            <td>
+              <strong style="color:var(--text-primary); font-size:0.9rem;">${log.profileName}</strong>
+              <div style="font-size:0.75rem; color:var(--text-muted);">${log.profileRoll}</div>
+            </td>
+            <td><strong style="color:var(--accent-color); font-size:1rem; font-family:'Orbitron', sans-serif;">${log.cgpa}</strong></td>
+            <td style="font-weight:600;">${log.percentage}</td>
+            <td style="font-size:0.8rem; font-weight:500;">${log.credits} / ${TOTAL_REGULATION_CREDITS}</td>
+            <td style="text-align:right;">
+              <button class="btn-premium" style="padding:6px 10px; font-size:0.75rem; display:inline-flex; border-color:transparent;" 
+                      onclick="app.deleteHistoryRecord('${log.timestamp}')" title="Delete record" aria-label="Delete Record">
+                <i data-lucide="trash-2" style="width:14px; height:14px; color:var(--error-color)"></i>
+              </button>
+            </td>
+          `;
+          this.historyTableBody.appendChild(tr);
+        });
+
+        lucide.createIcons();
+      }
+
+      deleteHistoryRecord(timestamp) {
+        if (confirm("Delete this snapshot record from history log?")) {
+          HistoryService.deleteLog(timestamp);
+          this.renderHistory();
+          this.showToast("Record snapshot deleted.", "warning");
+        }
+      }
+
+      clearHistoryLogs() {
+        if (confirm("Are you sure you want to completely wipe the calculation history log? This cannot be undone.")) {
+          HistoryService.clearAll();
+          this.renderHistory();
+          this.showToast("History logs cleared successfully.", "warning");
+        }
+      }
+
+      // ==========================================
+      // Analytics & Visualization Rendering (Chart.js)
+      // ==========================================
+      renderAnalyticsData() {
+        const trendCtx = document.getElementById('trendChart').getContext('2d');
+        const creditCtx = document.getElementById('creditChart').getContext('2d');
+        
+        const semesters = [];
+        const sgpaValues = [];
+        const runningCGPA = [];
+
+        let cumulativePoints = 0;
+        let cumulativeCredits = 0;
+        let gradedCoursesCount = 0;
+
+        const grades = this.currentProfile.grades || {};
+
+        for (let sem = 1; sem <= 8; sem++) {
+          const semGrades = grades[sem] || {};
+          let semWeightedPoints = 0;
+          let semCreditsGraded = 0;
+
+          SYLLABUS[sem].forEach(subj => {
+            const grade = semGrades[subj.name];
+            if (grade !== undefined && grade !== "") {
+              const gradePoint = GRADE_VALUES[grade];
+              semWeightedPoints += (gradePoint * subj.credits);
+              semCreditsGraded += subj.credits;
+              gradedCoursesCount++;
+            }
+          });
+
+          if (semCreditsGraded > 0) {
+            const sgpa = semWeightedPoints / semCreditsGraded;
+            semesters.push(`Sem ${sem}`);
+            sgpaValues.push(parseFloat(sgpa.toFixed(2)));
+
+            cumulativePoints += semWeightedPoints;
+            cumulativeCredits += semCreditsGraded;
+            
+            const cgpa = cumulativePoints / cumulativeCredits;
+            runningCGPA.push(parseFloat(cgpa.toFixed(2)));
+          }
+        }
+
+        const standingText = document.getElementById('insightStanding');
+        const completedCoursesText = document.getElementById('insightCompletedCourses');
+        const highestText = document.getElementById('insightHighest');
+        const lowestText = document.getElementById('insightLowest');
+
+        const totalCourseCount = Object.values(SYLLABUS).reduce((acc, s) => acc + s.length, 0);
+        completedCoursesText.textContent = `${gradedCoursesCount} / ${totalCourseCount}`;
+
+        if (sgpaValues.length > 0) {
+          const highest = Math.max(...sgpaValues);
+          const lowest = Math.min(...sgpaValues);
+          highestText.textContent = highest.toFixed(2);
+          lowestText.textContent = lowest.toFixed(2);
+
+          const finalCGPA = runningCGPA[runningCGPA.length - 1];
+          if (finalCGPA >= 9.0) standingText.textContent = "Outstanding Standing ⭐";
+          else if (finalCGPA >= 8.0) standingText.textContent = "Excellent standing 🎯";
+          else if (finalCGPA >= 7.0) standingText.textContent = "Very Good standing 👍";
+          else standingText.textContent = "Improvement required ⚠️";
+        } else {
+          highestText.textContent = '0.00';
+          lowestText.textContent = '0.00';
+          standingText.textContent = 'No grades entered';
+        }
+
+        if (this.trendChart) this.trendChart.destroy();
+        if (this.creditChart) this.creditChart.destroy();
+
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+        const textColor = isDark ? '#94a3b8' : '#475569';
+
+        if (semesters.length === 0) {
+          const drawEmpty = (ctx, msg) => {
+            ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+            ctx.font = '14px Plus Jakarta Sans';
+            ctx.fillStyle = '#64748b';
+            ctx.textAlign = 'center';
+            ctx.fillText(msg, ctx.canvas.width / 2, ctx.canvas.height / 2);
+          };
+          drawEmpty(trendCtx, 'Select subject grades in the calculator tab to generate trend analysis.');
+          drawEmpty(creditCtx, 'Select subject grades to generate credit metrics.');
+          return;
+        }
+
+        // 1. Trend Progress Chart
+        this.trendChart = new Chart(trendCtx, {
+          type: 'bar',
+          data: {
+            labels: semesters,
+            datasets: [
+              {
+                label: 'Semester SGPA',
+                data: sgpaValues,
+                backgroundColor: 'rgba(99, 102, 241, 0.25)',
+                borderColor: '#6366f1',
+                borderWidth: 2,
+                borderRadius: 8,
+                barPercentage: 0.45,
+                yAxisID: 'y'
+              },
+              {
+                label: 'Cumulative CGPA',
+                data: runningCGPA,
+                type: 'line',
+                borderColor: '#8b5cf6',
+                borderWidth: 3,
+                pointBackgroundColor: '#8b5cf6',
+                pointBorderColor: '#ffffff',
+                pointHoverRadius: 6,
+                fill: false,
+                tension: 0.25,
+                yAxisID: 'y'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: { color: textColor, font: { family: 'Plus Jakarta Sans', weight: '600' } }
+              },
+              tooltip: {
+                backgroundColor: isDark ? 'rgba(18, 16, 38, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                titleColor: isDark ? '#fff' : '#000',
+                bodyColor: isDark ? '#94a3b8' : '#475569',
+                borderColor: 'rgba(99, 102, 241, 0.2)',
+                borderWidth: 1,
+                padding: 12
+              }
+            },
+            scales: {
+              x: { grid: { color: gridColor }, ticks: { color: textColor } },
+              y: { grid: { color: gridColor }, min: 0, max: 10, ticks: { color: textColor } }
+            }
+          }
+        });
+
+        // 2. Credits Completion Chart
+        this.creditChart = new Chart(creditCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Credits Earned', 'Credits Remaining'],
+            datasets: [{
+              data: [cumulativeCredits, TOTAL_REGULATION_CREDITS - cumulativeCredits],
+              backgroundColor: ['rgba(16, 185, 129, 0.75)', 'rgba(255, 255, 255, 0.03)'],
+              borderColor: ['#10b981', 'transparent'],
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'right',
+                labels: { color: textColor, font: { family: 'Plus Jakarta Sans', weight: '600' } }
+              }
+            },
+            cutout: '75%'
+          }
+        });
+      }
+
+      // ==========================================
+      // PDF Transcript Exporter (html2pdf)
+      // ==========================================
+      exportReportPDF() {
+        const cgpa = parseFloat(this.cgpaVal.textContent) || 0.00;
+        if (cgpa === 0) {
+          this.showToast("Cannot export empty calculations!", "error");
+          return;
+        }
+
+        this.showToast("Generating Academic Report PDF...", "info");
+
+        const totalCreditsVal = this.creditsVal.textContent.split(' / ')[0];
+        const completedCredits = parseInt(totalCreditsVal) || 0;
+        const percentage = this.percentVal.textContent;
+        const standing = this.placementBadge.textContent;
+
+        const grades = this.currentProfile.grades || {};
+
+        // Hidden layout optimized specifically for PDF layout format
+        const reportFrame = document.createElement('div');
+        reportFrame.style.padding = '35px';
+        reportFrame.style.backgroundColor = '#ffffff';
+        reportFrame.style.color = '#000000';
+        reportFrame.style.fontFamily = 'Plus Jakarta Sans, sans-serif';
+
+        // Header element
+        let semesterDetailsHtml = '';
+        for (let sem = 1; sem <= 8; sem++) {
+          const semGrades = grades[sem] || {};
+          let rowsHtml = '';
+          let semWeightedPoints = 0;
+          let semCreditsGraded = 0;
+
+          SYLLABUS[sem].forEach(subj => {
+            const grade = semGrades[subj.name];
+            if (grade !== undefined && grade !== "") {
+              const gradePoint = GRADE_VALUES[grade];
+              semWeightedPoints += (gradePoint * subj.credits);
+              semCreditsGraded += subj.credits;
+
+              rowsHtml += `
+                <tr style="border-bottom: 1px solid #e2e8f0; font-size: 11px;">
+                  <td style="padding: 6px 12px; text-align: left; width: 65%; color: #334155;">${subj.name}</td>
+                  <td style="padding: 6px 12px; text-align: center; width: 15%; font-weight: 600;">${subj.credits}</td>
+                  <td style="padding: 6px 12px; text-align: right; width: 20%; font-weight: bold; color: #4f46e5;">${grade} (${gradePoint})</td>
+                </tr>
+              `;
+            }
+          });
+
+          if (semCreditsGraded > 0) {
+            const sgpa = semWeightedPoints / semCreditsGraded;
+            semesterDetailsHtml += `
+              <div style="margin-bottom: 24px; page-break-inside: avoid;">
+                <div style="background-color: #f1f5f9; padding: 6px 12px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #4f46e5; margin-bottom: 8px;">
+                  <span style="font-weight: 800; font-size: 12px; color: #1e293b;">SEMESTER ${sem}</span>
+                  <span style="font-weight: bold; font-size: 11px; color: #4f46e5;">SGPA: ${sgpa.toFixed(2)} (Completed ${semCreditsGraded} Credits)</span>
+                </div>
+                <table style="width: 100%; border-collapse: collapse;">
+                  <thead>
+                    <tr style="background-color: #f8fafc; border-bottom: 1px solid #cbd5e1;">
+                      <th style="padding: 6px 12px; text-align: left; font-size: 10px; color: #64748b; text-transform: uppercase;">Subject Title</th>
+                      <th style="padding: 6px 12px; text-align: center; font-size: 10px; color: #64748b; text-transform: uppercase;">Credits</th>
+                      <th style="padding: 6px 12px; text-align: right; font-size: 10px; color: #64748b; text-transform: uppercase;">Grade Awarded</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${rowsHtml}
+                  </tbody>
+                </table>
+              </div>
+            `;
+          }
+        }
+
+        reportFrame.innerHTML = `
+          <!-- Collage details -->
+          <div style="border-bottom: 2px solid #4f46e5; padding-bottom: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h1 style="margin: 0; font-size: 18px; color: #1e1b4b; font-weight: 800;">R.V.R & J.C College of Engineering</h1>
+              <p style="margin: 3px 0 0 0; font-size: 11px; color: #4f46e5; font-weight: bold; letter-spacing: 0.5px;">B.Tech CSE R24 Regulations (Autonomous)</p>
+            </div>
+            <div style="text-align: right;">
+              <h2 style="margin: 0; font-size: 14px; color: #4b5563; font-weight: 700;">ACADEMIC TRANSCRIPT REPORT</h2>
+              <p style="margin: 3px 0 0 0; font-size: 9px; color: #9ca3af;">Date Compiled: ${new Date().toLocaleDateString()}</p>
+            </div>
+          </div>
+
+          <!-- Profile snapshot -->
+          <div style="margin-bottom: 24px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h3 style="margin: 0 0 6px 0; font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: bold; letter-spacing: 0.5px;">Student Information</h3>
+              <p style="margin: 0; font-size: 15px; font-weight: 800; color: #0f172a;">${this.currentProfile.name}</p>
+              <p style="margin: 2px 0 0 0; font-size: 12px; color: #475569; font-weight: 600;">Roll Number: ${this.currentProfile.roll}</p>
+              <p style="margin: 2px 0 0 0; font-size: 10px; color: #94a3b8; font-style: italic;">${this.currentProfile.notes || 'R24 B.Tech Syllabus'}</p>
+            </div>
+            <div style="text-align: right; display: flex; gap: 20px;">
+              <div style="border-right: 1px solid #e2e8f0; padding-right: 16px;">
+                <div style="font-size: 9px; color: #64748b; font-weight: 700; text-transform: uppercase;">Final CGPA</div>
+                <div style="font-size: 24px; font-weight: 800; color: #4f46e5; margin-top: 2px;">${cgpa.toFixed(2)}</div>
+              </div>
+              <div style="border-right: 1px solid #e2e8f0; padding-right: 16px;">
+                <div style="font-size: 9px; color: #64748b; font-weight: 700; text-transform: uppercase;">Equivalent Percentage</div>
+                <div style="font-size: 18px; font-weight: 700; color: #0f172a; margin-top: 6px;">${percentage}</div>
+              </div>
+              <div>
+                <div style="font-size: 9px; color: #64748b; font-weight: 700; text-transform: uppercase;">Earned Credits</div>
+                <div style="font-size: 18px; font-weight: 700; color: #0f172a; margin-top: 6px;">${completedCredits} / ${TOTAL_REGULATION_CREDITS}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Semester breakdowns -->
+          ${semesterDetailsHtml}
+
+          <!-- Footer details -->
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 16px; margin-top: 30px; font-size: 10px; color: #64748b;">
+            <div>
+              <p style="margin: 0; font-weight: bold; color: #4f46e5;">Placement standing classification: ${standing}</p>
+              <p style="margin: 2px 0 0 0; font-size: 9px; color: #94a3b8;">* Marks percentage formula is based on APSCHE/R24 Autonomous norms: (CGPA - 0.5) x 10</p>
+            </div>
+            <div style="text-align: right; font-style: italic;">
+              Academic Portal Transcript Engine
+            </div>
+          </div>
+        `;
+
+        const options = {
+          margin: [0.4, 0.4, 0.4, 0.4],
+          filename: `RVRJC_R24_Transcript_${this.currentProfile.name.replace(/\s+/g, '_')}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2.5, useCORS: true },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().from(reportFrame).set(options).save()
+          .then(() => this.showToast("Transcript Report PDF downloaded successfully!", "success"))
+          .catch(err => {
+            console.error("PDF generator failed", err);
+            this.showToast("PDF generation failed.", "error");
+          });
+      }
+
+      // ==========================================
+      // Results Share Overlay Dialog
+      // ==========================================
+      openShareModal() {
+        const cgpa = parseFloat(this.cgpaVal.textContent) || 0.00;
+        if (cgpa === 0) {
+          this.showToast("No grades to share!", "error");
+          return;
+        }
+
+        const totalCreditsVal = this.creditsVal.textContent.split(' / ')[0];
+        const completedCredits = parseInt(totalCreditsVal) || 0;
+        const percentage = this.percentVal.textContent;
+        const standing = this.placementText.textContent;
+
+        const summary = `🎓 *R.V.R & J.C College of Engineering (Autonomous)*
+*B.Tech CSE R24 Regulations CGPA Report*
+
+👤 *Student:* ${this.currentProfile.name}
+🆔 *Roll/Reg Number:* ${this.currentProfile.roll}
+
+📊 *Academic standing:*
+• Cumulative CGPA: *${cgpa.toFixed(2)} / 10.00*
+• Equivalent Percentage: *${percentage}*
+• Earned Credits: *${completedCredits} / 160*
+• Placement Eligibility: *${standing}*
+
+_Calculated using RVR&JC subject-wise weighted credit matrix._`;
+
+        this.shareContentBox.textContent = summary;
+        this.shareModal.classList.add('active');
+      }
+
+      closeShareModal() {
+        this.shareModal.classList.remove('active');
+      }
+
+      copyShareReport() {
+        navigator.clipboard.writeText(this.shareContentBox.textContent)
+          .then(() => {
+            this.showToast("Report transcript copied to clipboard!", "success");
+            this.closeShareModal();
+          })
+          .catch(err => {
+            console.error("Clipboard write error", err);
+            this.showToast("Failed to copy transcript text.", "error");
+          });
+      }
+
+      systemShareReport() {
+        const data = {
+          title: 'RVR & JC CSE R24 Result Transcript',
+          text: this.shareContentBox.textContent
+        };
+
+        if (navigator.share) {
+          navigator.share(data)
+            .then(() => {
+              this.showToast("Shared result successfully!", "success");
+              this.closeShareModal();
+            })
+            .catch(err => {
+              if (err.name !== 'AbortError') {
+                this.showToast("System share aborted.", "error");
+              }
+            });
+        } else {
+          this.showToast("Web Share API is not supported on this browser. Copy text instead.", "info");
+        }
+      }
+    }
+
+    // Main controller instantiation
+    let app;
+    window.addEventListener('DOMContentLoaded', () => {
+      app = new AppController();
+      app.hidePreloader();
+    });
+  </script>
+</body>
+</html>
