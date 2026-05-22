@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <title>Admin Dashboard – CGPA Calculator</title>
+  <link rel='preconnect' href='https://fonts.googleapis.com'>
+  <link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+  <link href='https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap' rel='stylesheet'>
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #0a0816 0%, #05040a 50%, #020104 100%);
+      --bg-card: rgba(255,255,255,0.03);
+      --border-color: rgba(255,255,255,0.08);
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+      --transition-speed: 0.3s;
+    }
+    body {margin:0;font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg-gradient);color:var(--text-primary);display:flex;flex-direction:column;min-height:100vh;}
+    header {padding:16px 24px;background:var(--bg-card);border-bottom:1px solid var(--border-color);display:flex;justify-content:space-between;align-items:center;}
+    h1{margin:0;font-size:1.6rem;background:var(--accent-gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+    .logout-btn{background:var(--accent-gradient);border:none;color:#fff;padding:8px 16px;border-radius:8px;cursor:pointer;transition:transform var(--transition-speed);}
+    .logout-btn:hover{transform:translateY(-2px);box-shadow:0 4px 12px rgba(99,102,241,0.5);}
+    .content{flex:1;display:flex;justify-content:center;align-items:center;}
+    .card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:20px;padding:32px;width:90%;max-width:800px;backdrop-filter:blur(25px);box-shadow:0 8px 32px rgba(0,0,0,0.6);}
+    .welcome{font-size:1.4rem;margin-bottom:24px;}
+  </style>
+</head>
+<body onload='guardAdmin()'>
+  <header>
+    <h1>Admin Dashboard</h1>
+    <button class='logout-btn' onclick='logout()'>Logout</button>
+  </header>
+  <div class='content'>
+    <div class='card'>
+      <div class='welcome'>Welcome, Administrator!</div>
+      <p>This area will host student CGPA management tools.</p>
+      <!-- Future admin components go here -->
+    </div>
+  </div>
+  <script src='auth.js'></script>
+</body>
+</html>
