@@ -1,0 +1,2660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>R.V.R & J.C B.Tech CSE R24 CGPA Calculator</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Professional B.Tech CSE R24 CGPA Calculator for R.V.R & J.C College of Engineering. Calculate weighted CGPA, convert to percentage, save profiles, track history, and visualize performance with charts.">
+  <meta name="keywords" content="RVR JC, CGPA Calculator, R24 Regulation, CSE CGPA, Engineering CGPA, SGPA to CGPA">
+  <meta name="author" content="Designed for R24 CSE Students">
+  
+  <!-- Font and Icon Libraries -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Chart.js, Confetti and html2pdf CDNs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    /* Premium Futuristic Glassmorphism Styling System */
+    :root {
+      /* Dark Theme Variables (Default) */
+      --bg-gradient: radial-gradient(circle at 0% 0%, #121026 0%, #0c0919 50%, #05040a 100%);
+      --bg-card: rgba(255, 255, 255, 0.04);
+      --bg-card-hover: rgba(255, 255, 255, 0.07);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-color-focus: rgba(139, 92, 246, 0.6);
+      --text-primary: #ffffff;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --primary-glow: rgba(99, 102, 241, 0.15);
+      --accent-color: #6366f1;
+      --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+      --success-color: #10b981;
+      --warning-color: #f59e0b;
+      --error-color: #ef4444;
+      --shadow-color: rgba(0, 0, 0, 0.5);
+      --active-card-shadow: 0 0 20px rgba(99, 102, 241, 0.25);
+      --transition-speed: 0.3s;
+      --ring-background: rgba(255, 255, 255, 0.05);
+    }
+
+    [data-theme="light"] {
+      /* Light Theme Variables */
+      --bg-gradient: radial-gradient(circle at 0% 0%, #f4f6fc 0%, #eef2ff 50%, #e2e8f0 100%);
+      --bg-card: rgba(255, 255, 255, 0.65);
+      --bg-card-hover: rgba(255, 255, 255, 0.85);
+      --border-color: rgba(0, 0, 0, 0.08);
+      --border-color-focus: rgba(99, 102, 241, 0.6);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #64748b;
+      --primary-glow: rgba(99, 102, 241, 0.06);
+      --accent-color: #4f46e5;
+      --accent-gradient: linear-gradient(135deg, #7c3aed 0%, #4f46e5 50%, #2563eb 100%);
+      --success-color: #059669;
+      --warning-color: #d97706;
+      --error-color: #dc2626;
+      --shadow-color: rgba(31, 38, 135, 0.08);
+      --active-card-shadow: 0 10px 25px rgba(79, 70, 229, 0.15);
+      --ring-background: rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background var(--transition-speed), color var(--transition-speed);
+      position: relative;
+    }
+
+    /* Ambient Background Glows */
+    .ambient-glow-1 {
+      position: fixed;
+      top: -10%;
+      left: -10%;
+      width: 50vw;
+      height: 50vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%);
+      filter: blur(100px);
+      z-index: -2;
+      pointer-events: none;
+      animation: pulse-glow 25s infinite alternate;
+    }
+
+    .ambient-glow-2 {
+      position: fixed;
+      bottom: -10%;
+      right: -10%;
+      width: 45vw;
+      height: 45vw;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%);
+      filter: blur(100px);
+      z-index: -2;
+      pointer-events: none;
+      animation: pulse-glow 20s infinite alternate-reverse;
+    }
+
+    @keyframes pulse-glow {
+      0% { transform: scale(1) translate(0, 0); }
+      100% { transform: scale(1.15) translate(30px, 30px); }
+    }
+
+    /* Layout Wrapper */
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px;
+      min-height: 100vh;
+    }
+
+    /* Professional Top Navbar */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 24px;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 30px var(--shadow-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent-gradient);
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .college-logo-container {
+      background: var(--accent-gradient);
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+    }
+
+    .college-titles h1 {
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+
+    .college-titles p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* Futuristic Toggle Buttons & Selects */
+    .btn-circle {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .btn-circle:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-color);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px var(--primary-glow);
+    }
+
+    .btn-circle:active {
+      transform: translateY(0);
+    }
+
+    .profile-selector-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .select-premium {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px 36px 10px 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      outline: none;
+      transition: all var(--transition-speed);
+      appearance: none;
+      -webkit-appearance: none;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .select-premium:focus {
+      border-color: var(--border-color-focus);
+      box-shadow: 0 0 15px var(--primary-glow);
+    }
+
+    .profile-selector-container::after {
+      content: '\e910'; /* Lucide chevron-down fallback */
+      font-family: 'lucide';
+      position: absolute;
+      right: 14px;
+      pointer-events: none;
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+    }
+
+    /* Core Navigation Tabs */
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 6px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px var(--shadow-color);
+      width: fit-content;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all var(--transition-speed);
+    }
+
+    .tab-btn:hover {
+      color: var(--text-primary);
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .tab-btn.active {
+      color: #ffffff;
+      background: var(--accent-gradient);
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.35);
+    }
+
+    /* Content Views Configuration */
+    .view-content {
+      display: none;
+      animation: fadeIn var(--transition-speed) ease-in-out forwards;
+    }
+
+    .view-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* MAIN CALCULATOR VIEW GRID */
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1.8fr 1.2fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* Card Panels Styling */
+    .panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 8px 32px var(--shadow-color);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 14px;
+    }
+
+    .panel-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .panel-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* Semesters Grid Inputs */
+    .semesters-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .semester-card {
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all var(--transition-speed);
+      position: relative;
+    }
+
+    .semester-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(99, 102, 241, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .semester-card.active {
+      border-color: var(--accent-color);
+      box-shadow: var(--active-card-shadow);
+      background: rgba(99, 102, 241, 0.02);
+    }
+
+    .sem-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sem-name {
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    .sem-credits {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+
+    [data-theme="light"] .sem-credits {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-sgpa {
+      width: 100%;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      outline: none;
+      transition: all var(--transition-speed);
+      text-align: center;
+    }
+
+    [data-theme="light"] .input-sgpa {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .input-sgpa:focus {
+      border-color: var(--border-color-focus);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    /* Form Validation Error State */
+    .semester-card.has-error {
+      border-color: var(--error-color);
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+    }
+
+    .validation-tooltip {
+      position: absolute;
+      bottom: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--error-color);
+      color: white;
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 10;
+      opacity: 0;
+      visibility: hidden;
+      transition: all var(--transition-speed);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    .semester-card.has-error .validation-tooltip {
+      opacity: 1;
+      visibility: visible;
+      bottom: -25px;
+    }
+
+    /* RIGHT COLUMN - METRICS & ANALYTICS */
+    .metrics-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Dynamic Circular Progress Display */
+    .cgpa-gauge-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px;
+      text-align: center;
+      position: relative;
+    }
+
+    .gauge-wrapper {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .progress-ring {
+      transform: rotate(-90deg);
+      width: 200px;
+      height: 200px;
+    }
+
+    .progress-ring__circle {
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .gauge-info {
+      position: absolute;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gauge-value {
+      font-size: 2.8rem;
+      font-weight: 800;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+
+    .gauge-label {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+      margin-top: 2px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Primary Stats Mini Grid */
+    .stats-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      width: 100%;
+      margin-top: 14px;
+    }
+
+    .stat-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      transition: background var(--transition-speed);
+    }
+
+    [data-theme="light"] .stat-card {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .stat-value {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-secondary);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* Grade Predictor Card */
+    .prediction-card {
+      border-left: 5px solid var(--accent-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: all var(--transition-speed);
+    }
+
+    .prediction-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .prediction-value {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--accent-color);
+      margin-top: 2px;
+    }
+
+    .prediction-badge {
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Prediction Color Classes */
+    .badge-outstanding {
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+    .badge-excellent {
+      background: rgba(99, 102, 241, 0.15);
+      color: #6366f1;
+      border: 1px solid rgba(99, 102, 241, 0.3);
+    }
+    .badge-very-good {
+      background: rgba(59, 130, 246, 0.15);
+      color: #3b82f6;
+      border: 1px solid rgba(59, 130, 246, 0.3);
+    }
+    .badge-good {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid rgba(245, 158, 11, 0.3);
+    }
+    .badge-improve {
+      background: rgba(239, 104, 104, 0.15);
+      color: #ef4444;
+      border: 1px solid rgba(239, 104, 104, 0.3);
+    }
+
+    /* Actions Panel Card */
+    .actions-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    /* Buttons System */
+    .btn-premium {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .btn-premium:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-color);
+      transform: translateY(-2px);
+    }
+
+    .btn-premium.btn-accent {
+      background: var(--accent-gradient);
+      color: white;
+      border: none;
+      box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+    }
+
+    .btn-premium.btn-accent:hover {
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+    }
+
+    .btn-premium.btn-danger:hover {
+      border-color: var(--error-color);
+      color: var(--error-color);
+      box-shadow: 0 4px 15px rgba(239, 68, 68, 0.1);
+    }
+
+    .btn-premium:active {
+      transform: translateY(0);
+    }
+
+    .btn-premium:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+      border-color: var(--border-color) !important;
+    }
+
+    /* ANALYTICS VIEW PANELS */
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+    }
+
+    .chart-container {
+      width: 100%;
+      height: 350px;
+      position: relative;
+    }
+
+    .insights-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .insight-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: background var(--transition-speed);
+    }
+
+    [data-theme="light"] .insight-item {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .insight-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--accent-color);
+    }
+
+    .insight-details {
+      flex: 1;
+    }
+
+    .insight-title {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .insight-val {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-top: 2px;
+    }
+
+    /* PROFILES VIEW PANELS */
+    .profiles-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 24px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-input {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 12px 14px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all var(--transition-speed);
+    }
+
+    [data-theme="light"] .form-input {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .form-input:focus {
+      border-color: var(--border-color-focus);
+      box-shadow: 0 0 10px var(--primary-glow);
+    }
+
+    .profiles-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 8px;
+    }
+
+    .profiles-list::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .profiles-list::-webkit-scrollbar-thumb {
+      background: var(--border-color);
+      border-radius: 10px;
+    }
+
+    .profile-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 16px;
+      transition: all var(--transition-speed);
+      position: relative;
+    }
+
+    [data-theme="light"] .profile-card {
+      background: rgba(0, 0, 0, 0.01);
+    }
+
+    .profile-card:hover {
+      background: var(--bg-card-hover);
+      transform: translateY(-2px);
+    }
+
+    .profile-card.active {
+      border-color: var(--accent-color);
+      box-shadow: var(--active-card-shadow);
+      background: rgba(99, 102, 241, 0.02);
+    }
+
+    .profile-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+
+    .profile-card-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .profile-card-roll {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .profile-card-cgpa-badge {
+      background: var(--accent-gradient);
+      color: white;
+      padding: 6px 12px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 800;
+      box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+    }
+
+    .profile-card-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-profile-action {
+      flex: 1;
+      padding: 8px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border-radius: 8px;
+    }
+
+    /* HISTORY VIEW PANELS */
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .search-bar-container {
+      position: relative;
+      flex: 1;
+      max-width: 400px;
+    }
+
+    .search-input {
+      width: 100%;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 10px 16px 10px 40px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: all var(--transition-speed);
+    }
+
+    [data-theme="light"] .search-input {
+      background: rgba(255, 255, 255, 0.5);
+    }
+
+    .search-input:focus {
+      border-color: var(--border-color-focus);
+    }
+
+    .search-icon-pos {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.9rem;
+    }
+
+    .history-table th {
+      background: rgba(255,255,255,0.03);
+      padding: 14px 18px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border-color);
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+
+    [data-theme="light"] .history-table th {
+      background: rgba(0,0,0,0.02);
+    }
+
+    .history-table td {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .history-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .history-table tr:hover td {
+      background: rgba(255,255,255,0.01);
+    }
+
+    [data-theme="light"] .history-table tr:hover td {
+      background: rgba(0,0,0,0.005);
+    }
+
+    .history-empty-state {
+      padding: 40px;
+      text-align: center;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* MOCK DB CONTROLLER / PROFILE POPUP TOASTS */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 9999;
+    }
+
+    .toast {
+      background: rgba(18, 16, 38, 0.85);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 20px;
+      color: white;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateY(50px);
+      opacity: 0;
+      animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+      pointer-events: auto;
+    }
+
+    [data-theme="light"] .toast {
+      background: rgba(255,255,255,0.9);
+      color: #0f172a;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .toast-success { border-left: 4px solid var(--success-color); }
+    .toast-error { border-left: 4px solid var(--error-color); }
+    .toast-info { border-left: 4px solid var(--accent-color); }
+
+    @keyframes slideIn {
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .toast-icon {
+      flex-shrink: 0;
+    }
+
+    .toast-content {
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    /* Modal dialog overlays */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 500px;
+      padding: 24px;
+      transform: scale(0.9);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal-overlay.active .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+    }
+
+    .modal-close {
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      transition: color var(--transition-speed);
+    }
+
+    .modal-close:hover {
+      color: var(--text-primary);
+    }
+
+    .share-content-box {
+      background: rgba(0,0,0,0.2);
+      border: 1px solid var(--border-color);
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      white-space: pre-wrap;
+    }
+
+    [data-theme="light"] .share-content-box {
+      background: rgba(255,255,255,0.5);
+    }
+
+    /* Print styling rules */
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .app-container {
+        padding: 0 !important;
+      }
+      header, .nav-tabs, .actions-panel, .bg-glow, .ambient-glow-1, .ambient-glow-2, .btn-circle, .profile-selector-container {
+        display: none !important;
+      }
+      .panel {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+      }
+      .calculator-grid {
+        display: block !important;
+      }
+      .semesters-grid {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+      }
+      .semester-card {
+        background: transparent !important;
+        border: 1px solid #ddd !important;
+        page-break-inside: avoid;
+      }
+      .input-sgpa {
+        background: transparent !important;
+        border: 1px solid #ddd !important;
+        color: black !important;
+      }
+      .progress-ring__circle {
+        stroke: #4f46e5 !important;
+      }
+      .gauge-value {
+        color: #4f46e5 !important;
+        -webkit-text-fill-color: #4f46e5 !important;
+      }
+      .prediction-card {
+        border-left: 5px solid #4f46e5 !important;
+      }
+    }
+
+    /* Footer styling */
+    footer {
+      text-align: center;
+      padding: 24px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-top: 1px solid var(--border-color);
+      margin-top: auto;
+    }
+
+    /* Screen Preloader */
+    .preloader {
+      position: fixed;
+      top:0; left:0; right:0; bottom:0;
+      background: #05040a;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(99, 102, 241, 0.1);
+      border-top-color: var(--accent-color);
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
+      .analytics-grid {
+        grid-template-columns: 1fr;
+      }
+      .profiles-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .semesters-grid {
+        grid-template-columns: 1fr;
+      }
+      .profiles-list {
+        grid-template-columns: 1fr;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+      }
+      .header-right {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .nav-tabs {
+        width: 100%;
+        overflow-x: auto;
+      }
+      .tab-btn {
+        flex: 1;
+        justify-content: center;
+        white-space: nowrap;
+      }
+      .action-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body data-theme="dark">
+
+  <!-- Ambient Glows -->
+  <div class="ambient-glow-1"></div>
+  <div class="ambient-glow-2"></div>
+
+  <!-- Loading Animation screen -->
+  <div class="preloader" id="preloader">
+    <div class="spinner"></div>
+    <h2 style="color: white; font-weight: 700; font-size: 1.2rem; letter-spacing: 1px;">R.V.R & J.C CALCULATOR</h2>
+    <p style="color: #64748b; font-size: 0.85rem; font-weight: 500;">Loading academic portal...</p>
+  </div>
+
+  <div class="app-container">
+    
+    <!-- Header Block -->
+    <header>
+      <div class="header-left">
+        <div class="college-logo-container">
+          <i data-lucide="graduation-cap" style="width: 26px; height: 26px;"></i>
+        </div>
+        <div class="college-titles">
+          <h1>R.V.R & J.C College of Engineering (Autonomous)</h1>
+          <p>B.Tech CSE R24 CGPA Calculator</p>
+        </div>
+      </div>
+      <div class="header-right">
+        <!-- Profile selector -->
+        <div class="profile-selector-container">
+          <select class="select-premium" id="profileSelector" aria-label="Select student profile">
+            <option value="default">Default Profile</option>
+          </select>
+        </div>
+        
+        <!-- Add profile shortcut -->
+        <button class="btn-circle" id="btnAddProfileShortcut" title="Create New Profile" aria-label="Create New Profile">
+          <i data-lucide="user-plus" style="width: 18px; height: 18px;"></i>
+        </button>
+
+        <!-- Theme Toggle Button -->
+        <button class="btn-circle" id="themeToggle" title="Toggle Theme" aria-label="Toggle Theme">
+          <i data-lucide="sun" id="themeIcon" style="width: 18px; height: 18px;"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs" role="tablist">
+      <button class="tab-btn active" data-tab="calculator" role="tab" aria-selected="true" aria-controls="tab-calculator">
+        <i data-lucide="calculator" style="width: 16px; height: 16px;"></i> Calculator
+      </button>
+      <button class="tab-btn" data-tab="analytics" role="tab" aria-selected="false" aria-controls="tab-analytics">
+        <i data-lucide="bar-chart-2" style="width: 16px; height: 16px;"></i> Analytics
+      </button>
+      <button class="tab-btn" data-tab="profiles" role="tab" aria-selected="false" aria-controls="tab-profiles">
+        <i data-lucide="users" style="width: 16px; height: 16px;"></i> Profiles DB
+      </button>
+      <button class="tab-btn" data-tab="history" role="tab" aria-selected="false" aria-controls="tab-history">
+        <i data-lucide="history" style="width: 16px; height: 16px;"></i> History Log
+      </button>
+    </nav>
+
+    <!-- Main View: Calculator -->
+    <div id="tab-calculator" class="view-content active" role="tabpanel">
+      <div class="calculator-grid">
+        
+        <!-- Left Panel: Semester GPAs inputs -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title"><i data-lucide="layout-grid" style="color: var(--accent-color)"></i>Semester-wise SGPA</h2>
+              <p class="panel-subtitle">Enter SGPA (0.00 - 10.00) for completed semesters. Calculation updates in real time.</p>
+            </div>
+            <button class="btn-premium btn-danger" id="btnResetAll" style="padding: 8px 14px; font-size: 0.8rem;">
+              <i data-lucide="rotate-ccw" style="width: 14px; height: 14px;"></i> Reset
+            </button>
+          </div>
+          
+          <form class="semesters-grid" id="cgpaForm" onsubmit="return false;">
+            <!-- Semester Cards will be dynamically added via JavaScript -->
+          </form>
+        </div>
+
+        <!-- Right Panel: CGPA Metrics & Actions -->
+        <div class="metrics-panel">
+          <!-- Circular CGPA Gauge Panel -->
+          <div class="panel cgpa-gauge-card">
+            <div class="gauge-wrapper">
+              <svg class="progress-ring" width="200" height="200">
+                <circle class="progress-ring__background" stroke="var(--ring-background)" stroke-width="12" fill="transparent" r="85" cx="100" cy="100"/>
+                <circle class="progress-ring__circle" stroke="url(#cgpaGradient)" stroke-width="12" stroke-linecap="round" fill="transparent" r="85" cx="100" cy="100"/>
+                <defs>
+                  <linearGradient id="cgpaGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#8b5cf6" />
+                    <stop offset="50%" stop-color="#6366f1" />
+                    <stop offset="100%" stop-color="#3b82f6" />
+                  </linearGradient>
+                </defs>
+              </svg>
+              <div class="gauge-info">
+                <span class="gauge-value" id="cgpaVal">0.00</span>
+                <span class="gauge-label">CGPA</span>
+              </div>
+            </div>
+
+            <!-- Stats Mini-Grid -->
+            <div class="stats-mini-grid">
+              <div class="stat-card">
+                <span class="stat-value" id="percentVal">0.0%</span>
+                <span class="stat-label">Percentage</span>
+              </div>
+              <div class="stat-card">
+                <span class="stat-value" id="creditsVal">0 / 160</span>
+                <span class="stat-label">Total Credits</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Grade Prediction Panel -->
+          <div class="panel prediction-card">
+            <div>
+              <div class="prediction-title">Grade Prediction</div>
+              <div class="prediction-value" id="predictionText">Enter SGPAs</div>
+            </div>
+            <span class="prediction-badge" id="predictionBadge">N/A</span>
+          </div>
+
+          <!-- Dashboard Actions -->
+          <div class="panel actions-panel">
+            <div class="panel-header" style="margin-bottom: 12px; padding-bottom: 8px;">
+              <h3 class="panel-title" style="font-size: 0.95rem;"><i data-lucide="sliders" style="width: 16px; height: 16px;"></i>Actions</h3>
+            </div>
+            <button class="btn-premium btn-accent" id="btnSaveCalculation">
+              <i data-lucide="save" style="width: 18px; height: 18px;"></i> Save to Profile DB
+            </button>
+            <div class="action-row">
+              <button class="btn-premium" id="btnDownloadPDF">
+                <i data-lucide="download" style="width: 16px; height: 16px;"></i> Download PDF
+              </button>
+              <button class="btn-premium" id="btnShareResult">
+                <i data-lucide="share-2" style="width: 16px; height: 16px;"></i> Share Result
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Analytics View -->
+    <div id="tab-analytics" class="view-content" role="tabpanel">
+      <div class="analytics-grid">
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title"><i data-lucide="trending-up" style="color: var(--accent-color)"></i>Performance Analytics</h2>
+              <p class="panel-subtitle">Visual performance trends of SGPAs and cumulative CGPA progression.</p>
+            </div>
+          </div>
+          <div class="chart-container">
+            <canvas id="performanceChart"></canvas>
+          </div>
+        </div>
+
+        <!-- Academic Insights Panel -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title"><i data-lucide="award" style="color: var(--accent-color)"></i>Insights</h2>
+          </div>
+          <div class="insights-list">
+            <div class="insight-item">
+              <div class="insight-icon"><i data-lucide="zap"></i></div>
+              <div class="insight-details">
+                <div class="insight-title">Highest Semester SGPA</div>
+                <div class="insight-val" id="insightHighest">0.00</div>
+              </div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-icon"><i data-lucide="trending-down"></i></div>
+              <div class="insight-details">
+                <div class="insight-title">Lowest Semester SGPA</div>
+                <div class="insight-val" id="insightLowest">0.00</div>
+              </div>
+            </div>
+            <div class="insight-item">
+              <div class="insight-icon"><i data-lucide="star"></i></div>
+              <div class="insight-details">
+                <div class="insight-title">Academic Standing</div>
+                <div class="insight-val" id="insightStanding">Waiting for data</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Profiles DB View -->
+    <div id="tab-profiles" class="view-content" role="tabpanel">
+      <div class="profiles-grid">
+        
+        <!-- Form to Add/Edit Profiles -->
+        <div class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title"><i data-lucide="user-plus" style="color: var(--accent-color)"></i>New Profile</h2>
+          </div>
+          <form id="profileForm" onsubmit="return false;">
+            <div class="form-group">
+              <label for="profName">Student Name *</label>
+              <input type="text" class="form-input" id="profName" placeholder="e.g. Rahul Saini" required>
+            </div>
+            <div class="form-group">
+              <label for="profRoll">Roll Number / Reg ID</label>
+              <input type="text" class="form-input" id="profRoll" placeholder="e.g. Y24ACS501">
+            </div>
+            <div class="form-group">
+              <label for="profNotes">Notes / Description</label>
+              <input type="text" class="form-input" id="profNotes" placeholder="e.g. Target 8.5+ CGPA">
+            </div>
+            <button type="submit" class="btn-premium btn-accent" style="width: 100%; margin-top: 8px;" id="btnCreateProfile">
+              <i data-lucide="plus-circle" style="width: 18px; height: 18px;"></i> Create Profile
+            </button>
+          </form>
+        </div>
+
+        <!-- Saved Profiles List -->
+        <div class="panel">
+          <div class="panel-header">
+            <div>
+              <h2 class="panel-title"><i data-lucide="database" style="color: var(--accent-color)"></i>Profile Database</h2>
+              <p class="panel-subtitle">Manage saved student profiles. Click load to view or edit their academic records.</p>
+            </div>
+          </div>
+          <div class="profiles-list" id="profilesList">
+            <!-- Dynamic profiles will be rendered here -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- History Log View -->
+    <div id="tab-history" class="view-content" role="tabpanel">
+      <div class="panel">
+        <div class="panel-header" style="flex-wrap: wrap; gap: 16px;">
+          <div>
+            <h2 class="panel-title"><i data-lucide="file-text" style="color: var(--accent-color)"></i>Saved Calculation Records</h2>
+            <p class="panel-subtitle">Historical records of saved calculations inside local memory storage.</p>
+          </div>
+          <button class="btn-premium btn-danger" id="btnClearHistory" style="padding: 8px 14px; font-size: 0.8rem;">
+            <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Clear All History
+          </button>
+        </div>
+
+        <div class="history-header">
+          <div class="search-bar-container">
+            <i data-lucide="search" class="search-icon-pos" style="width: 16px; height: 16px;"></i>
+            <input type="text" class="search-input" id="historySearch" placeholder="Search by student name or roll number..." aria-label="Search History">
+          </div>
+        </div>
+
+        <div class="table-container">
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>Student Profile</th>
+                <th>SGPAs Entered</th>
+                <th>CGPA</th>
+                <th>Percentage</th>
+                <th>Credits</th>
+                <th style="text-align: right;">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody">
+              <!-- Dynamically rendered history records -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+      Designed for R24 CSE Students • R.V.R & J.C College of Engineering (Autonomous)
+    </footer>
+  </div>
+
+  <!-- Share Modal Dialog -->
+  <div class="modal-overlay" id="shareModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 style="font-weight: 700; display: flex; align-items: center; gap: 8px;">
+          <i data-lucide="share-2" style="color: var(--accent-color)"></i> Share Performance Report
+        </h3>
+        <button class="modal-close" id="btnCloseModal" aria-label="Close modal">
+          <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+        </button>
+      </div>
+      <div class="share-content-box" id="shareContentBox"></div>
+      <div style="display: flex; gap: 12px;">
+        <button class="btn-premium btn-accent" id="btnCopyClipboard" style="flex: 1;">
+          <i data-lucide="copy" style="width: 18px; height: 18px;"></i> Copy Report
+        </button>
+        <button class="btn-premium" id="btnSystemShare" style="flex: 1;">
+          <i data-lucide="send" style="width: 18px; height: 18px;"></i> System Share
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- System Javascript Logic -->
+  <script>
+    // Constants & Credits configuration
+    const SEMESTER_CREDITS = {
+      1: 19,
+      2: 21,
+      3: 21,
+      4: 21,
+      5: 23,
+      6: 23,
+      7: 20,
+      8: 12
+    };
+    const TOTAL_REGULATION_CREDITS = 160;
+
+    // ==========================================
+    // 1. MOCK DATABASE ENGINE (LocalStorageDB)
+    // ==========================================
+    class LocalStorageDB {
+      static get(key, defaultValue = []) {
+        try {
+          const data = localStorage.getItem(`rvrjc_r24_${key}`);
+          return data ? JSON.parse(data) : defaultValue;
+        } catch (e) {
+          console.error("Database read error for key: " + key, e);
+          return defaultValue;
+        }
+      }
+
+      static save(key, data) {
+        try {
+          localStorage.setItem(`rvrjc_r24_${key}`, JSON.stringify(data));
+          return true;
+        } catch (e) {
+          console.error("Database write error for key: " + key, e);
+          return false;
+        }
+      }
+    }
+
+    // ==========================================
+    // 2. MOCK BACKEND SERVICE LAYER (Profile & History Services)
+    // ==========================================
+    class ProfileService {
+      static getAll() {
+        const profiles = LocalStorageDB.get('profiles', []);
+        if (profiles.length === 0) {
+          // Initialize with a default profile if empty
+          const defaultProfile = {
+            id: 'default',
+            name: 'Default Profile',
+            roll: 'N/A',
+            notes: 'System default placeholder profile',
+            semesters: { 1: '', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '' },
+            cgpa: 0.00,
+            completedCredits: 0
+          };
+          LocalStorageDB.save('profiles', [defaultProfile]);
+          return [defaultProfile];
+        }
+        return profiles;
+      }
+
+      static getById(id) {
+        const profiles = this.getAll();
+        return profiles.find(p => p.id === id) || profiles[0];
+      }
+
+      static saveProfile(profile) {
+        const profiles = this.getAll();
+        const index = profiles.findIndex(p => p.id === profile.id);
+        if (index > -1) {
+          profiles[index] = profile;
+        } else {
+          profiles.push(profile);
+        }
+        LocalStorageDB.save('profiles', profiles);
+      }
+
+      static deleteProfile(id) {
+        if (id === 'default') return false; // Prevent deleting default
+        let profiles = this.getAll();
+        profiles = profiles.filter(p => p.id !== id);
+        LocalStorageDB.save('profiles', profiles);
+        return true;
+      }
+    }
+
+    class HistoryService {
+      static getLogs() {
+        return LocalStorageDB.get('history', []);
+      }
+
+      static addLog(log) {
+        const logs = this.getLogs();
+        logs.unshift(log); // Add to beginning of log
+        // Cap history to 50 items
+        if (logs.length > 50) logs.pop();
+        LocalStorageDB.save('history', logs);
+      }
+
+      static clearAll() {
+        LocalStorageDB.save('history', []);
+      }
+
+      static deleteLog(timestamp) {
+        let logs = this.getLogs();
+        logs = logs.filter(l => l.timestamp !== timestamp);
+        LocalStorageDB.save('history', logs);
+      }
+    }
+
+    // ==========================================
+    // 3. FRONTEND UI CONTROLLER LAYER
+    // ==========================================
+    class AppController {
+      constructor() {
+        this.currentProfileId = localStorage.getItem('rvrjc_r24_current_profile_id') || 'default';
+        this.currentProfile = null;
+        this.chart = null;
+        this.initElements();
+        this.setupEventListeners();
+        this.renderSemesterForm();
+        this.loadCurrentProfile();
+        this.renderHistory();
+        this.updateTheme();
+      }
+
+      initElements() {
+        this.preloader = document.getElementById('preloader');
+        this.cgpaForm = document.getElementById('cgpaForm');
+        this.profileSelector = document.getElementById('profileSelector');
+        this.btnAddProfileShortcut = document.getElementById('btnAddProfileShortcut');
+        this.themeToggle = document.getElementById('themeToggle');
+        this.themeIcon = document.getElementById('themeIcon');
+        
+        // Navigation Elements
+        this.tabs = document.querySelectorAll('.tab-btn');
+        this.views = document.querySelectorAll('.view-content');
+
+        // Metrics elements
+        this.cgpaVal = document.getElementById('cgpaVal');
+        this.percentVal = document.getElementById('percentVal');
+        this.creditsVal = document.getElementById('creditsVal');
+        this.predictionText = document.getElementById('predictionText');
+        this.predictionBadge = document.getElementById('predictionBadge');
+
+        // Circular Gauge
+        this.circle = document.querySelector('.progress-ring__circle');
+        this.radius = this.circle.r.baseVal.value;
+        this.circumference = this.radius * 2 * Math.PI;
+        this.circle.style.strokeDasharray = `${this.circumference} ${this.circumference}`;
+        this.circle.style.strokeDashoffset = this.circumference;
+
+        // Interactive Buttons
+        this.btnResetAll = document.getElementById('btnResetAll');
+        this.btnSaveCalculation = document.getElementById('btnSaveCalculation');
+        this.btnDownloadPDF = document.getElementById('btnDownloadPDF');
+        this.btnShareResult = document.getElementById('btnShareResult');
+
+        // Profile Form Elements
+        this.profileForm = document.getElementById('profileForm');
+        this.profNameInput = document.getElementById('profName');
+        this.profRollInput = document.getElementById('profRoll');
+        this.profNotesInput = document.getElementById('profNotes');
+        this.profilesList = document.getElementById('profilesList');
+
+        // History Log Elements
+        this.historySearch = document.getElementById('historySearch');
+        this.historyTableBody = document.getElementById('historyTableBody');
+        this.btnClearHistory = document.getElementById('btnClearHistory');
+
+        // Modal Dialog Elements
+        this.shareModal = document.getElementById('shareModal');
+        this.shareContentBox = document.getElementById('shareContentBox');
+        this.btnCloseModal = document.getElementById('btnCloseModal');
+        this.btnCopyClipboard = document.getElementById('btnCopyClipboard');
+        this.btnSystemShare = document.getElementById('btnSystemShare');
+        
+        // Toast Container
+        this.toastContainer = document.getElementById('toastContainer');
+      }
+
+      setupEventListeners() {
+        // Tab switching Event Listeners
+        this.tabs.forEach(tab => {
+          tab.addEventListener('click', () => this.switchTab(tab.dataset.tab));
+        });
+
+        // Profile Selection Selector Change
+        this.profileSelector.addEventListener('change', (e) => {
+          this.switchProfile(e.target.value);
+        });
+
+        // Shortcut Button (Add Profile)
+        this.btnAddProfileShortcut.addEventListener('click', () => {
+          this.switchTab('profiles');
+          this.profNameInput.focus();
+        });
+
+        // Theme Toggle
+        this.themeToggle.addEventListener('click', () => this.toggleTheme());
+
+        // Reset inputs
+        this.btnResetAll.addEventListener('click', () => this.resetFormInputs());
+
+        // Create Profile Form Submit
+        this.profileForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          this.createNewProfile();
+        });
+
+        // Search Bar in History Log
+        this.historySearch.addEventListener('input', () => this.renderHistory());
+
+        // Clear History
+        this.btnClearHistory.addEventListener('click', () => this.clearHistoryLogs());
+
+        // Save Current Calculation
+        this.btnSaveCalculation.addEventListener('click', () => this.saveCalculationToDB());
+
+        // Export/Download Report PDF
+        this.btnDownloadPDF.addEventListener('click', () => this.exportReportPDF());
+
+        // Share buttons
+        this.btnShareResult.addEventListener('click', () => this.openShareModal());
+        this.btnCloseModal.addEventListener('click', () => this.closeShareModal());
+        this.btnCopyClipboard.addEventListener('click', () => this.copyShareReport());
+        this.btnSystemShare.addEventListener('click', () => this.systemShareReport());
+
+        // Close modal when clicking on background backdrop
+        window.addEventListener('click', (e) => {
+          if (e.target === this.shareModal) {
+            this.closeShareModal();
+          }
+        });
+      }
+
+      // Hide Loading Preloader Screen
+      hidePreloader() {
+        setTimeout(() => {
+          this.preloader.style.opacity = '0';
+          this.preloader.style.visibility = 'hidden';
+        }, 800);
+      }
+
+      // Tab switcher implementation
+      switchTab(tabId) {
+        this.tabs.forEach(tab => {
+          if (tab.dataset.tab === tabId) {
+            tab.classList.add('active');
+            tab.setAttribute('aria-selected', 'true');
+          } else {
+            tab.classList.remove('active');
+            tab.setAttribute('aria-selected', 'false');
+          }
+        });
+
+        this.views.forEach(view => {
+          if (view.id === `tab-${tabId}`) {
+            view.classList.add('active');
+          } else {
+            view.classList.remove('active');
+          }
+        });
+
+        // If switching to Analytics, refresh/render charts
+        if (tabId === 'analytics') {
+          this.renderPerformanceCharts();
+        }
+
+        // If switching to Profiles, render profiles grid
+        if (tabId === 'profiles') {
+          this.renderProfilesGrid();
+        }
+
+        // If switching to History, render history log
+        if (tabId === 'history') {
+          this.renderHistory();
+        }
+      }
+
+      // Theme toggle implementation
+      toggleTheme() {
+        const body = document.body;
+        const currentTheme = body.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        body.setAttribute('data-theme', newTheme);
+        localStorage.setItem('rvrjc_r24_theme', newTheme);
+        this.updateTheme();
+        
+        // Rerender chart with new text colors if it exists
+        if (this.chart) {
+          this.renderPerformanceCharts();
+        }
+
+        this.showToast(`Switched to ${newTheme} mode!`, 'info');
+      }
+
+      updateTheme() {
+        const theme = localStorage.getItem('rvrjc_r24_theme') || 'dark';
+        document.body.setAttribute('data-theme', theme);
+        if (theme === 'dark') {
+          this.themeIcon.setAttribute('data-lucide', 'sun');
+        } else {
+          this.themeIcon.setAttribute('data-lucide', 'moon');
+        }
+        lucide.createIcons();
+      }
+
+      // Toast Notifications UI Renderer
+      showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        
+        let iconName = 'check-circle';
+        if (type === 'error') iconName = 'alert-triangle';
+        if (type === 'info') iconName = 'info';
+
+        toast.innerHTML = `
+          <i data-lucide="${iconName}" class="toast-icon"></i>
+          <div class="toast-content">${message}</div>
+        `;
+        
+        this.toastContainer.appendChild(toast);
+        lucide.createIcons();
+
+        // Remove toast after animation ends
+        setTimeout(() => {
+          toast.style.animation = 'slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) reverse forwards';
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+      }
+
+      // Render 8 Semester SGPA card forms
+      renderSemesterForm() {
+        this.cgpaForm.innerHTML = '';
+        for (let i = 1; i <= 8; i++) {
+          const card = document.createElement('div');
+          card.className = `semester-card`;
+          card.id = `semCard-${i}`;
+          card.innerHTML = `
+            <div class="sem-meta">
+              <span class="sem-name">Semester ${i}</span>
+              <span class="sem-credits">${SEMESTER_CREDITS[i]} Credits</span>
+            </div>
+            <div class="input-wrapper">
+              <input type="number" step="0.01" min="0" max="10" 
+                     class="input-sgpa" id="sgpa-sem-${i}" 
+                     placeholder="SGPA" aria-label="Semester ${i} SGPA input">
+              <div class="validation-tooltip" id="tooltip-sem-${i}">Enter value 0 to 10 only</div>
+            </div>
+          `;
+          
+          this.cgpaForm.appendChild(card);
+
+          // Realtime validation and auto calculate inputs listener
+          const input = card.querySelector('.input-sgpa');
+          input.addEventListener('input', (e) => this.handleSGPAInput(i, e.target.value));
+        }
+      }
+
+      // Load Profile selectors
+      loadProfileDropdown() {
+        const profiles = ProfileService.getAll();
+        this.profileSelector.innerHTML = '';
+        profiles.forEach(profile => {
+          const opt = document.createElement('option');
+          opt.value = profile.id;
+          opt.textContent = `${profile.name} (${profile.roll})`;
+          if (profile.id === this.currentProfileId) {
+            opt.selected = true;
+          }
+          this.profileSelector.appendChild(opt);
+        });
+      }
+
+      // Switch Profile selected
+      switchProfile(profileId) {
+        this.currentProfileId = profileId;
+        localStorage.setItem('rvrjc_r24_current_profile_id', profileId);
+        this.loadCurrentProfile();
+        this.showToast(`Switched to profile: ${this.currentProfile.name}`, 'info');
+      }
+
+      // Load active profile data
+      loadCurrentProfile() {
+        this.loadProfileDropdown();
+        this.currentProfile = ProfileService.getById(this.currentProfileId);
+        
+        // Populating the inputs
+        for (let i = 1; i <= 8; i++) {
+          const input = document.getElementById(`sgpa-sem-${i}`);
+          const card = document.getElementById(`semCard-${i}`);
+          const val = this.currentProfile.semesters[i] || '';
+          input.value = val;
+
+          // Toggle card active states
+          if (val !== '' && !isNaN(parseFloat(val))) {
+            card.classList.add('active');
+          } else {
+            card.classList.remove('active');
+          }
+          card.classList.remove('has-error');
+        }
+
+        this.calculateCGPA();
+      }
+
+      // Reset SGPA values of current profile
+      resetFormInputs() {
+        if (confirm("Are you sure you want to clear all entered SGPAs? This profile details will be reset.")) {
+          for (let i = 1; i <= 8; i++) {
+            const input = document.getElementById(`sgpa-sem-${i}`);
+            input.value = '';
+            const card = document.getElementById(`semCard-${i}`);
+            card.classList.remove('active');
+            card.classList.remove('has-error');
+          }
+          this.calculateCGPA();
+          this.saveCurrentProfileToStorage();
+          this.showToast("All semester values reset successfully!", "info");
+        }
+      }
+
+      // SGPA dynamic inputs validations
+      handleSGPAInput(semesterId, value) {
+        const card = document.getElementById(`semCard-${semesterId}`);
+        const input = document.getElementById(`sgpa-sem-${semesterId}`);
+
+        if (value === '') {
+          card.classList.remove('active');
+          card.classList.remove('has-error');
+        } else {
+          const valNum = parseFloat(value);
+          // Standard check (0 - 10 inclusive)
+          if (isNaN(valNum) || valNum < 0 || valNum > 10) {
+            card.classList.add('has-error');
+            card.classList.remove('active');
+          } else {
+            card.classList.remove('has-error');
+            card.classList.add('active');
+          }
+        }
+
+        // Run calculations
+        this.calculateCGPA();
+        // Save state immediately
+        this.saveCurrentProfileToStorage();
+      }
+
+      // Save inputs directly to active profile structure in storage
+      saveCurrentProfileToStorage() {
+        const semesters = {};
+        for (let i = 1; i <= 8; i++) {
+          const val = document.getElementById(`sgpa-sem-${i}`).value;
+          semesters[i] = val !== '' ? parseFloat(val) : '';
+        }
+
+        const cgpa = parseFloat(this.cgpaVal.textContent) || 0.00;
+        const totalCreditsVal = this.creditsVal.textContent.split(' / ')[0];
+        const completedCredits = parseInt(totalCreditsVal) || 0;
+
+        this.currentProfile.semesters = semesters;
+        this.currentProfile.cgpa = cgpa;
+        this.currentProfile.completedCredits = completedCredits;
+
+        ProfileService.saveProfile(this.currentProfile);
+      }
+
+      // Core Math: Calculate weighted CGPA
+      calculateCGPA() {
+        let totalWeightedPoints = 0;
+        let totalCompletedCredits = 0;
+        let totalInputSemesters = 0;
+        let hasErrors = false;
+
+        for (let i = 1; i <= 8; i++) {
+          const inputVal = document.getElementById(`sgpa-sem-${i}`).value;
+          const card = document.getElementById(`semCard-${i}`);
+
+          if (card.classList.contains('has-error')) {
+            hasErrors = true;
+          }
+
+          if (inputVal !== '') {
+            const sgpa = parseFloat(inputVal);
+            if (!isNaN(sgpa) && sgpa >= 0 && sgpa <= 10) {
+              const credits = SEMESTER_CREDITS[i];
+              totalWeightedPoints += (sgpa * credits);
+              totalCompletedCredits += credits;
+              totalInputSemesters++;
+            }
+          }
+        }
+
+        if (hasErrors || totalInputSemesters === 0) {
+          this.setMetrics(0.00, 0.0, 0, 'Enter SGPAs', 'N/A');
+          this.btnSaveCalculation.disabled = true;
+          return;
+        }
+
+        // Safe division
+        const cgpa = totalCompletedCredits > 0 ? (totalWeightedPoints / totalCompletedCredits) : 0.00;
+        const cgpaRounded = Math.round((cgpa + Number.EPSILON) * 100) / 100; // Round to 2 decimal places
+
+        // Percentage Formula: (CGPA - 0.50) * 10
+        let percentage = (cgpaRounded - 0.50) * 10;
+        if (percentage < 0) percentage = 0.0;
+        const percentageRounded = Math.round((percentage + Number.EPSILON) * 10) / 10;
+
+        // Perform grade prediction
+        let grade = 'N/A';
+        let badgeClass = 'badge-good';
+        if (cgpaRounded >= 9.0) {
+          grade = 'Outstanding';
+          badgeClass = 'badge-outstanding';
+        } else if (cgpaRounded >= 8.0) {
+          grade = 'Excellent';
+          badgeClass = 'badge-excellent';
+        } else if (cgpaRounded >= 7.0) {
+          grade = 'Very Good';
+          badgeClass = 'badge-very-good';
+        } else if (cgpaRounded >= 6.0) {
+          grade = 'Good';
+          badgeClass = 'badge-good';
+        } else if (cgpaRounded > 0.0) {
+          grade = 'Needs Improvement';
+          badgeClass = 'badge-improve';
+        }
+
+        this.setMetrics(cgpaRounded.toFixed(2), percentageRounded.toFixed(1), totalCompletedCredits, grade, badgeClass);
+        this.btnSaveCalculation.disabled = false;
+
+        // Confetti effect celebration for CGPA >= 9.0
+        if (cgpaRounded >= 9.0 && !this.celebrated) {
+          this.triggerConfetti();
+          this.celebrated = true;
+        } else if (cgpaRounded < 9.0) {
+          this.celebrated = false;
+        }
+      }
+
+      setMetrics(cgpa, percentage, credits, grade, badgeClass) {
+        this.cgpaVal.textContent = cgpa;
+        this.percentVal.textContent = `${percentage}%`;
+        this.creditsVal.textContent = `${credits} / ${TOTAL_REGULATION_CREDITS}`;
+        this.predictionText.textContent = grade;
+        
+        // CSS Badge updates
+        this.predictionBadge.className = `prediction-badge ${badgeClass}`;
+        this.predictionBadge.textContent = grade === 'Enter SGPAs' ? 'N/A' : grade;
+
+        // Ring progress animation
+        const offset = this.circumference - (cgpa / 10) * this.circumference;
+        this.circle.style.strokeDashoffset = offset;
+      }
+
+      triggerConfetti() {
+        confetti({
+          particleCount: 150,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ['#8b5cf6', '#6366f1', '#3b82f6', '#10b981', '#f59e0b']
+        });
+      }
+
+      // ==========================================
+      // Save Calculation to Database (History Service)
+      // ==========================================
+      saveCalculationToDB() {
+        const cgpa = parseFloat(this.cgpaVal.textContent);
+        if (isNaN(cgpa) || cgpa === 0) {
+          this.showToast("Cannot save empty calculations!", "error");
+          return;
+        }
+
+        // Build semesters list string
+        const sgpaList = [];
+        for (let i = 1; i <= 8; i++) {
+          const val = document.getElementById(`sgpa-sem-${i}`).value;
+          if (val !== '') {
+            sgpaList.push(`S${i}: ${val}`);
+          }
+        }
+
+        const currentCredits = parseInt(this.creditsVal.textContent.split(' / ')[0]);
+        const percentage = this.percentVal.textContent;
+
+        const logRecord = {
+          timestamp: new Date().toISOString(),
+          profileName: this.currentProfile.name,
+          profileRoll: this.currentProfile.roll,
+          sgpas: sgpaList.join(', '),
+          cgpa: cgpa.toFixed(2),
+          percentage: percentage,
+          credits: currentCredits
+        };
+
+        HistoryService.addLog(logRecord);
+        this.showToast("Calculation saved to history log!", "success");
+        this.renderHistory();
+      }
+
+      // ==========================================
+      // Profiles Tab Rendering & Creation Actions
+      // ==========================================
+      renderProfilesGrid() {
+        const profiles = ProfileService.getAll();
+        this.profilesList.innerHTML = '';
+
+        profiles.forEach(profile => {
+          const isActive = profile.id === this.currentProfileId;
+          const card = document.createElement('div');
+          card.className = `profile-card ${isActive ? 'active' : ''}`;
+          
+          card.innerHTML = `
+            <div class="profile-card-header">
+              <div>
+                <div class="profile-card-name">${profile.name}</div>
+                <div class="profile-card-roll">Reg ID: ${profile.roll}</div>
+                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px; font-style: italic;">
+                  ${profile.notes || 'No description'}
+                </div>
+              </div>
+              <div class="profile-card-cgpa-badge">${profile.cgpa.toFixed(2)}</div>
+            </div>
+            <div>
+              <div style="font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 10px;">
+                Completed credits: ${profile.completedCredits} / ${TOTAL_REGULATION_CREDITS}
+              </div>
+              <div class="profile-card-actions">
+                <button class="btn-premium btn-profile-action" onclick="app.loadSelectedProfile('${profile.id}')" style="background: rgba(99, 102, 241, 0.1); border-color: rgba(99, 102, 241, 0.2);">
+                  Load
+                </button>
+                <button class="btn-premium btn-danger btn-profile-action" 
+                        onclick="app.deleteSelectedProfile('${profile.id}')" 
+                        ${profile.id === 'default' ? 'disabled' : ''}>
+                  Delete
+                </button>
+              </div>
+            </div>
+          `;
+          this.profilesList.appendChild(card);
+        });
+      }
+
+      createNewProfile() {
+        const name = this.profNameInput.value.trim();
+        const roll = this.profRollInput.value.trim() || 'N/A';
+        const notes = this.profNotesInput.value.trim();
+
+        if (!name) return;
+
+        const newId = 'profile_' + Date.now();
+        const newProfile = {
+          id: newId,
+          name: name,
+          roll: roll,
+          notes: notes,
+          semesters: { 1: '', 2: '', 3: '', 4: '', 5: '', 6: '', 7: '', 8: '' },
+          cgpa: 0.00,
+          completedCredits: 0
+        };
+
+        ProfileService.saveProfile(newProfile);
+        
+        // Reset form
+        this.profileForm.reset();
+        
+        this.showToast(`Profile "${name}" created successfully!`, 'success');
+        this.switchProfile(newId);
+        this.renderProfilesGrid();
+        this.switchTab('calculator');
+      }
+
+      loadSelectedProfile(profileId) {
+        this.switchProfile(profileId);
+        this.renderProfilesGrid();
+        this.switchTab('calculator');
+      }
+
+      deleteSelectedProfile(profileId) {
+        const profile = ProfileService.getById(profileId);
+        if (confirm(`Are you sure you want to delete profile "${profile.name}"? This action cannot be undone.`)) {
+          ProfileService.deleteProfile(profileId);
+          if (this.currentProfileId === profileId) {
+            this.switchProfile('default');
+          }
+          this.renderProfilesGrid();
+          this.showToast(`Deleted profile "${profile.name}"`, 'warning');
+        }
+      }
+
+      // ==========================================
+      // History Log Tab Implementation
+      // ==========================================
+      renderHistory() {
+        const searchQuery = this.historySearch.value.toLowerCase();
+        let logs = HistoryService.getLogs();
+
+        // Apply filter
+        if (searchQuery) {
+          logs = logs.filter(l => 
+            l.profileName.toLowerCase().includes(searchQuery) || 
+            l.profileRoll.toLowerCase().includes(searchQuery) ||
+            l.sgpas.toLowerCase().includes(searchQuery)
+          );
+        }
+
+        this.historyTableBody.innerHTML = '';
+        if (logs.length === 0) {
+          this.historyTableBody.innerHTML = `
+            <tr>
+              <td colspan="7">
+                <div class="history-empty-state">
+                  <i data-lucide="inbox" style="width: 32px; height: 32px; color: var(--text-muted);"></i>
+                  <span>No matching calculation records found.</span>
+                </div>
+              </td>
+            </tr>
+          `;
+          lucide.createIcons();
+          return;
+        }
+
+        logs.forEach(log => {
+          const dateStr = new Date(log.timestamp).toLocaleString();
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="font-size: 0.8rem; font-weight: 500;">${dateStr}</td>
+            <td>
+              <strong style="color: var(--text-primary); font-size: 0.9rem;">${log.profileName}</strong>
+              <div style="font-size: 0.75rem; color: var(--text-muted);">${log.profileRoll}</div>
+            </td>
+            <td style="font-size: 0.8rem; max-width: 250px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" title="${log.sgpas}">
+              ${log.sgpas || 'None'}
+            </td>
+            <td><strong style="color: var(--accent-color); font-size: 1rem;">${log.cgpa}</strong></td>
+            <td style="font-weight: 600;">${log.percentage}</td>
+            <td style="font-size: 0.8rem; font-weight: 500;">${log.credits} / ${TOTAL_REGULATION_CREDITS}</td>
+            <td style="text-align: right;">
+              <button class="btn-premium" style="padding: 6px 10px; font-size: 0.75rem; display: inline-flex;" 
+                      onclick="app.deleteHistoryRecord('${log.timestamp}')" title="Delete record" aria-label="Delete Record">
+                <i data-lucide="trash-2" style="width: 14px; height: 14px; color: var(--error-color)"></i>
+              </button>
+            </td>
+          `;
+          this.historyTableBody.appendChild(tr);
+        });
+
+        lucide.createIcons();
+      }
+
+      deleteHistoryRecord(timestamp) {
+        if (confirm("Delete this saved calculation from history?")) {
+          HistoryService.deleteLog(timestamp);
+          this.renderHistory();
+          this.showToast("Record deleted from history.", "warning");
+        }
+      }
+
+      clearHistoryLogs() {
+        if (confirm("Are you sure you want to completely clear the calculation history log? This cannot be undone.")) {
+          HistoryService.clearAll();
+          this.renderHistory();
+          this.showToast("History log cleared.", "warning");
+        }
+      }
+
+      // ==========================================
+      // Analytics & Dynamic Charts Integration
+      // ==========================================
+      renderPerformanceCharts() {
+        const ctx = document.getElementById('performanceChart').getContext('2d');
+        
+        // Prepare semester details
+        const semesters = [];
+        const sgpaValues = [];
+        const runningCGPA = [];
+
+        let cumulativePoints = 0;
+        let cumulativeCredits = 0;
+
+        for (let i = 1; i <= 8; i++) {
+          const val = this.currentProfile.semesters[i];
+          if (val !== '' && !isNaN(parseFloat(val))) {
+            const sgpa = parseFloat(val);
+            semesters.push(`Sem ${i}`);
+            sgpaValues.push(sgpa);
+
+            const credits = SEMESTER_CREDITS[i];
+            cumulativePoints += (sgpa * credits);
+            cumulativeCredits += credits;
+            
+            const cgpa = cumulativeCredits > 0 ? (cumulativePoints / cumulativeCredits) : 0;
+            runningCGPA.push(parseFloat(cgpa.toFixed(2)));
+          }
+        }
+
+        // Set analytical metrics
+        if (sgpaValues.length > 0) {
+          const highest = Math.max(...sgpaValues);
+          const lowest = Math.min(...sgpaValues);
+          document.getElementById('insightHighest').textContent = highest.toFixed(2);
+          document.getElementById('insightLowest').textContent = lowest.toFixed(2);
+
+          const finalCGPA = runningCGPA[runningCGPA.length - 1];
+          let statusText = 'Good';
+          if (finalCGPA >= 9.0) statusText = 'Outstanding ⭐';
+          else if (finalCGPA >= 8.0) statusText = 'Excellent 🎯';
+          else if (finalCGPA >= 7.0) statusText = 'Very Good 👍';
+          else if (finalCGPA < 6.0) statusText = 'Needs Improvement ⚠️';
+
+          document.getElementById('insightStanding').textContent = statusText;
+        } else {
+          document.getElementById('insightHighest').textContent = '0.00';
+          document.getElementById('insightLowest').textContent = '0.00';
+          document.getElementById('insightStanding').textContent = 'Waiting for data';
+        }
+
+        // If chart already initialized, destroy to update with new theme configurations
+        if (this.chart) {
+          this.chart.destroy();
+        }
+
+        if (semesters.length === 0) {
+          // Draw empty state on canvas context
+          ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          ctx.font = '14px Plus Jakarta Sans';
+          ctx.fillStyle = '#64748b';
+          ctx.textAlign = 'center';
+          ctx.fillText('Please enter SGPAs in the calculator tab to view chart visualizations.', ctx.canvas.width / 2, ctx.canvas.height / 2);
+          return;
+        }
+
+        // Themes text color configurations
+        const isDark = document.body.getAttribute('data-theme') === 'dark';
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.06)' : 'rgba(0, 0, 0, 0.06)';
+        const textColor = isDark ? '#94a3b8' : '#475569';
+
+        this.chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: semesters,
+            datasets: [
+              {
+                label: 'Semester SGPA',
+                data: sgpaValues,
+                backgroundColor: 'rgba(99, 102, 241, 0.3)',
+                borderColor: '#6366f1',
+                borderWidth: 2,
+                borderRadius: 8,
+                barPercentage: 0.5,
+                yAxisID: 'y'
+              },
+              {
+                label: 'Cumulative CGPA',
+                data: runningCGPA,
+                type: 'line',
+                borderColor: '#8b5cf6',
+                borderWidth: 3,
+                pointBackgroundColor: '#8b5cf6',
+                pointBorderColor: '#ffffff',
+                pointHoverRadius: 7,
+                fill: false,
+                tension: 0.3,
+                yAxisID: 'y'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: 'top',
+                labels: {
+                  color: textColor,
+                  font: { family: 'Plus Jakarta Sans', weight: '600' }
+                }
+              },
+              tooltip: {
+                backgroundColor: isDark ? 'rgba(18, 16, 38, 0.95)' : 'rgba(255, 255, 255, 0.95)',
+                titleColor: isDark ? '#fff' : '#000',
+                bodyColor: isDark ? '#94a3b8' : '#475569',
+                borderColor: 'rgba(99, 102, 241, 0.2)',
+                borderWidth: 1,
+                titleFont: { family: 'Plus Jakarta Sans', weight: '700' },
+                bodyFont: { family: 'Plus Jakarta Sans' },
+                padding: 12
+              }
+            },
+            scales: {
+              x: {
+                grid: { color: gridColor },
+                ticks: { color: textColor, font: { family: 'Plus Jakarta Sans', weight: '500' } }
+              },
+              y: {
+                grid: { color: gridColor },
+                min: 0,
+                max: 10,
+                ticks: { color: textColor, font: { family: 'Plus Jakarta Sans', weight: '500' } }
+              }
+            }
+          }
+        });
+      }
+
+      // ==========================================
+      // Export Academic Report as PDF
+      // ==========================================
+      exportReportPDF() {
+        this.showToast("Formatting report sheet...", "info");
+        
+        const cgpa = parseFloat(this.cgpaVal.textContent) || 0.00;
+        const totalCreditsVal = this.creditsVal.textContent.split(' / ')[0];
+        const completedCredits = parseInt(totalCreditsVal) || 0;
+        const percentage = this.percentVal.textContent;
+        const standing = this.predictionText.textContent;
+
+        // Build elegant PDF report element
+        const element = document.createElement('div');
+        element.style.padding = '40px';
+        element.style.fontFamily = 'Plus Jakarta Sans, sans-serif';
+        element.style.color = '#000';
+        element.style.backgroundColor = '#fff';
+
+        let semesterRowsHtml = '';
+        for (let i = 1; i <= 8; i++) {
+          const val = this.currentProfile.semesters[i];
+          semesterRowsHtml += `
+            <tr style="border-bottom: 1px solid #eee;">
+              <td style="padding: 12px; font-weight: bold;">Semester ${i}</td>
+              <td style="padding: 12px; text-align: center;">${SEMESTER_CREDITS[i]}</td>
+              <td style="padding: 12px; text-align: right; font-weight: bold; color: ${val !== '' ? '#4f46e5' : '#888'};">
+                ${val !== '' ? parseFloat(val).toFixed(2) : 'N/A'}
+              </td>
+            </tr>
+          `;
+        }
+
+        element.innerHTML = `
+          <div style="border-bottom: 2px solid #4f46e5; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+              <h1 style="margin: 0; font-size: 20px; color: #1e1b4b;">R.V.R & J.C College of Engineering</h1>
+              <p style="margin: 5px 0 0 0; font-size: 13px; color: #4f46e5; font-weight: bold;">B.Tech CSE R24 Regulations (Autonomous)</p>
+            </div>
+            <div style="text-align: right;">
+              <h2 style="margin: 0; font-size: 16px; color: #4b5563;">ACADEMIC CGPA REPORT</h2>
+              <p style="margin: 5px 0 0 0; font-size: 11px; color: #9ca3af;">Generated on: ${new Date().toLocaleDateString()}</p>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 30px; background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; display: flex; justify-content: space-between;">
+            <div>
+              <h3 style="margin: 0 0 8px 0; font-size: 14px; color: #475569;">STUDENT PROFILE</h3>
+              <p style="margin: 0; font-size: 16px; font-weight: bold; color: #0f172a;">${this.currentProfile.name}</p>
+              <p style="margin: 4px 0 0 0; font-size: 13px; color: #64748b;">Registration No: ${this.currentProfile.roll}</p>
+              <p style="margin: 4px 0 0 0; font-size: 11px; color: #94a3b8; font-style: italic;">${this.currentProfile.notes || ''}</p>
+            </div>
+            <div style="text-align: right; display: flex; gap: 20px;">
+              <div style="border-right: 1px solid #cbd5e1; padding-right: 20px;">
+                <div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase;">Regulation CGPA</div>
+                <div style="font-size: 28px; font-weight: 800; color: #4f46e5; margin-top: 4px;">${cgpa.toFixed(2)}</div>
+              </div>
+              <div style="border-right: 1px solid #cbd5e1; padding-right: 20px;">
+                <div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase;">Equivalent Percentage</div>
+                <div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 8px;">${percentage}</div>
+              </div>
+              <div>
+                <div style="font-size: 11px; color: #64748b; font-weight: bold; text-transform: uppercase;">Completed Credits</div>
+                <div style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 8px;">${completedCredits} / ${TOTAL_REGULATION_CREDITS}</div>
+              </div>
+            </div>
+          </div>
+
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px;">
+            <thead>
+              <tr style="background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;">
+                <th style="padding: 12px; text-align: left; font-size: 12px; color: #475569; text-transform: uppercase;">Academic Term</th>
+                <th style="padding: 12px; text-align: center; font-size: 12px; color: #475569; text-transform: uppercase;">Regulation Credits</th>
+                <th style="padding: 12px; text-align: right; font-size: 12px; color: #475569; text-transform: uppercase;">Grade Point (SGPA)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${semesterRowsHtml}
+            </tbody>
+          </table>
+
+          <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 20px; margin-top: 40px;">
+            <div>
+              <p style="margin: 0; font-size: 13px; color: #4f46e5; font-weight: 700;">Academic Standing: ${standing}</p>
+              <p style="margin: 3px 0 0 0; font-size: 11px; color: #64748b;">R24 CGPA percentage formula: (CGPA - 0.50) x 10</p>
+            </div>
+            <div style="text-align: right; font-size: 11px; color: #94a3b8;">
+              R.V.R & J.C B.Tech CSE CGPA Portal
+            </div>
+          </div>
+        `;
+
+        const opt = {
+          margin: 0.5,
+          filename: `RVRJC_R24_CGPA_${this.currentProfile.name.replace(/\s+/g, '_')}.pdf`,
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2, useCORS: true },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        // Trigger html2pdf compiler
+        html2pdf().from(element).set(opt).save()
+          .then(() => this.showToast("Report PDF downloaded!", "success"))
+          .catch(err => {
+            console.error("PDF export failure", err);
+            this.showToast("PDF generation failed. Try reloading.", "error");
+          });
+      }
+
+      // ==========================================
+      // Custom Modal Share Performance Panel
+      // ==========================================
+      openShareModal() {
+        const cgpa = parseFloat(this.cgpaVal.textContent) || 0.00;
+        const totalCreditsVal = this.creditsVal.textContent.split(' / ')[0];
+        const completedCredits = parseInt(totalCreditsVal) || 0;
+        const percentage = this.percentVal.textContent;
+        const standing = this.predictionText.textContent;
+
+        const summaryText = `🎓 R.V.R & J.C College of Engineering (Autonomous)
+B.Tech CSE R24 Regulations CGPA Calculator
+
+👤 Student: ${this.currentProfile.name}
+🆔 Roll/Reg No: ${this.currentProfile.roll}
+
+📊 Academic Performance:
+• Weighted CGPA: ${cgpa.toFixed(2)} / 10.00
+• Marks Percentage: ${percentage}
+• Completed Credits: ${completedCredits} / ${TOTAL_REGULATION_CREDITS}
+• Grade Classification: ${standing}
+
+Designed for R24 CSE Students. Calculate yours dynamically at local memory storage.`;
+
+        this.shareContentBox.textContent = summaryText;
+        this.shareModal.classList.add('active');
+      }
+
+      closeShareModal() {
+        this.shareModal.classList.remove('active');
+      }
+
+      copyShareReport() {
+        navigator.clipboard.writeText(this.shareContentBox.textContent)
+          .then(() => {
+            this.showToast("Report copied to clipboard!", "success");
+            this.closeShareModal();
+          })
+          .catch(err => {
+            console.error("Clipboard copy failed", err);
+            this.showToast("Failed to copy report. Copy manually.", "error");
+          });
+      }
+
+      systemShareReport() {
+        const shareData = {
+          title: 'RVR & JC CSE R24 CGPA Report',
+          text: this.shareContentBox.textContent
+        };
+
+        if (navigator.share) {
+          navigator.share(shareData)
+            .then(() => {
+              this.showToast("Report shared successfully!", "success");
+              this.closeShareModal();
+            })
+            .catch(err => {
+              // Ignore abort error
+              if (err.name !== 'AbortError') {
+                this.showToast("System share failed. Try Copy instead.", "error");
+              }
+            });
+        } else {
+          this.showToast("Web Share API is not supported by this browser. Use Copy instead.", "info");
+        }
+      }
+    }
+
+    // Initialize controller and expose it globally
+    let app;
+    window.addEventListener('DOMContentLoaded', () => {
+      app = new AppController();
+      app.hidePreloader();
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>
