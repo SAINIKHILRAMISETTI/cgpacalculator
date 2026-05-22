@@ -3,55 +3,292 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login – CGPA Calculator</title>
+  <title>Login – R.V.R &amp; J.C CGPA Calculator</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet" />
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* Reuse design system variables from index.html */
     :root {
       --bg-gradient: linear-gradient(135deg, #0a0816 0%, #05040a 50%, #020104 100%);
       --bg-card: rgba(255, 255, 255, 0.03);
+      --bg-card-hover: rgba(255, 255, 255, 0.06);
       --border-color: rgba(255, 255, 255, 0.08);
+      --border-color-focus: rgba(139, 92, 246, 0.6);
       --text-primary: #ffffff;
       --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent-color: #6366f1;
       --accent-gradient: linear-gradient(135deg, #8b5cf6 0%, #6366f1 50%, #3b82f6 100%);
+      --neon-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+      --shadow-color: rgba(0, 0, 0, 0.6);
       --transition-speed: 0.3s;
+      --error-color: #ef4444;
+      --success-color: #10b981;
     }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+
     body {
-      margin: 0; font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg-gradient); color: var(--text-primary);
-      display: flex; align-items: center; justify-content: center; height: 100vh;
+      background: var(--bg-gradient);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
     }
-    .card {
-      background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 20px; padding: 40px; width: 320px; backdrop-filter: blur(25px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+
+    /* Ambient glow orbs */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      z-index: 0;
+      pointer-events: none;
     }
-    h2 { margin: 0 0 24px; font-size: 1.5rem; text-align: center; background: var(--accent-gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-    .input-group { margin-bottom: 18px; }
-    label { display: block; margin-bottom: 4px; font-size: 0.9rem; color: var(--text-secondary); }
-    input { width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.07); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-size: 0.95rem; }
-    input:focus { outline: none; border-color: var(--accent-gradient); box-shadow: 0 0 10px var(--accent-gradient); }
-    button { width: 100%; padding: 12px; background: var(--accent-gradient); border: none; border-radius: 10px; color: #fff; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform var(--transition-speed); }
-    button:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(99,102,241,0.5); }
-    .msg { margin-top: 12px; text-align: center; font-size: 0.9rem; }
+    body::before {
+      top: -15%; left: -10%; width: 55vw; height: 55vw;
+      background: radial-gradient(circle, rgba(139, 92, 246, 0.08) 0%, transparent 70%);
+      animation: pulse1 25s infinite alternate;
+    }
+    body::after {
+      bottom: -15%; right: -10%; width: 50vw; height: 50vw;
+      background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+      animation: pulse2 20s infinite alternate-reverse;
+    }
+    @keyframes pulse1 { 0% { transform: scale(1); } 100% { transform: scale(1.15) translate(40px, 40px); } }
+    @keyframes pulse2 { 0% { transform: scale(1); } 100% { transform: scale(1.2) translate(-30px, -40px); } }
+
+    .login-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+    }
+
+    .login-card {
+      background: var(--bg-card);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 40px 36px;
+      box-shadow: 0 8px 32px var(--shadow-color);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .login-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 2px;
+      background: var(--accent-gradient);
+    }
+
+    .logo-section {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .logo-icon {
+      width: 64px; height: 64px; border-radius: 16px;
+      background: var(--accent-gradient);
+      display: inline-flex; align-items: center; justify-content: center;
+      color: #fff; box-shadow: var(--neon-shadow);
+      margin-bottom: 16px;
+    }
+
+    .logo-section h1 {
+      font-size: 1.5rem; font-weight: 800;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .logo-section p {
+      font-size: 0.85rem; color: var(--text-secondary); font-weight: 500;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block; font-size: 0.85rem; font-weight: 600;
+      color: var(--text-secondary); margin-bottom: 8px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .input-wrapper {
+      position: relative; display: flex; align-items: center;
+    }
+
+    .input-wrapper i {
+      position: absolute; left: 14px; color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .form-input {
+      width: 100%; padding: 14px 14px 14px 44px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border-color);
+      border-radius: 12px; color: var(--text-primary);
+      font-size: 0.95rem; font-weight: 500;
+      outline: none; transition: all var(--transition-speed);
+    }
+
+    .form-input:focus {
+      border-color: var(--border-color-focus);
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .btn-login {
+      width: 100%; padding: 16px;
+      background: var(--accent-gradient);
+      border: none; border-radius: 14px;
+      color: #fff; font-size: 1rem; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 8px;
+      transition: all var(--transition-speed) cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--neon-shadow);
+      margin-top: 8px;
+    }
+
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
+    }
+
+    .btn-login:active { transform: translateY(0); }
+
+    .btn-login:disabled {
+      opacity: 0.6; cursor: not-allowed; transform: none !important;
+    }
+
+    .error-toast {
+      margin-top: 16px; padding: 12px 16px;
+      background: rgba(239, 68, 68, 0.12);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      border-radius: 10px; font-size: 0.85rem;
+      color: var(--error-color); text-align: center;
+      display: none;
+    }
+
+    .error-toast.visible { display: block; animation: fadeIn 0.3s ease; }
+
+    .footer-link {
+      text-align: center; margin-top: 20px;
+      font-size: 0.85rem; color: var(--text-secondary);
+    }
+
+    .footer-link a {
+      color: var(--accent-color); text-decoration: none; font-weight: 600;
+    }
+
+    .footer-link a:hover { text-decoration: underline; }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Spinner */
+    .spinner { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff; border-radius: 50%; animation: spin 0.6s linear infinite; display: none; }
+    .btn-login.loading .spinner { display: inline-block; }
+    .btn-login.loading .btn-text { display: none; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
-  <div class="card">
-    <h2>Login</h2>
-    <form id="loginForm">
-      <div class="input-group">
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required />
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo-section">
+        <div class="logo-icon"><i data-lucide="graduation-cap" style="width:32px;height:32px;"></i></div>
+        <h1>Welcome Back</h1>
+        <p>Sign in to the CGPA Admin Dashboard</p>
       </div>
-      <div class="input-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required />
+
+      <form id="loginForm" autocomplete="on">
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <div class="input-wrapper">
+            <i data-lucide="mail" style="width:18px;height:18px;"></i>
+            <input class="form-input" type="email" id="email" name="email" placeholder="admin@admin.com" required />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="input-wrapper">
+            <i data-lucide="lock" style="width:18px;height:18px;"></i>
+            <input class="form-input" type="password" id="password" name="password" placeholder="••••••••" required />
+          </div>
+        </div>
+
+        <button type="submit" class="btn-login" id="loginBtn">
+          <span class="btn-text">Sign In</span>
+          <div class="spinner"></div>
+        </button>
+      </form>
+
+      <div class="error-toast" id="errorToast"></div>
+
+      <div class="footer-link">
+        <a href="index.html">← Back to Calculator</a>
       </div>
-      <button type="submit">Sign In</button>
-    </form>
-    <div class="msg" id="msg"></div>
+    </div>
   </div>
-  <script src="auth.js"></script>
+
+  <script>
+    // Init Lucide icons
+    lucide.createIcons();
+
+    const API_BASE = 'http://localhost:3000';
+    const form = document.getElementById('loginForm');
+    const loginBtn = document.getElementById('loginBtn');
+    const errorToast = document.getElementById('errorToast');
+
+    function showError(msg) {
+      errorToast.textContent = msg;
+      errorToast.classList.add('visible');
+      setTimeout(() => errorToast.classList.remove('visible'), 4000);
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = form.email.value.trim();
+      const password = form.password.value;
+
+      loginBtn.classList.add('loading');
+      loginBtn.disabled = true;
+
+      try {
+        const res = await fetch(API_BASE + '/api/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await res.json();
+        if (res.ok && data.token) {
+          localStorage.setItem('authToken', data.token);
+          localStorage.setItem('userEmail', email);
+          window.location.href = 'admin.html';
+        } else {
+          showError(data.msg || 'Login failed. Check your credentials.');
+        }
+      } catch (err) {
+        console.error(err);
+        showError('Cannot reach the server. Make sure the backend is running on port 3000.');
+      } finally {
+        loginBtn.classList.remove('loading');
+        loginBtn.disabled = false;
+      }
+    });
+  </script>
 </body>
 </html>
